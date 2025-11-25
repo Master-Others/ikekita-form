@@ -83,6 +83,7 @@ async function initApp() {
             CONFIG.AUTH_PASSWORD = password;
 
             // 4. 初期画面の描画を開始
+            buildForm(); // フォーム項目を動的生成
             setupEventHandlers();
             createRequestSet(); // 初期セット追加
 
@@ -112,10 +113,6 @@ function createRequestSet() {
     // HTML生成
     div.innerHTML = `
         <h3 class="title2">【業務依頼】池本池別</h3>
-
-        <div id="formFieldsContainer">
-            <!-- フォーム項目がここに挿入されます -->
-        </div>
 
         <label class="main-label">店舗選択</label>
         <select name="place_${requestCount}" id="placeSelect">
@@ -306,7 +303,7 @@ function createRequestSet() {
 
             try {
                 // GASへ送信
-                const response = await fetch(CONFIG.ENDPOINT, {
+                const response = await fetch(ENDPOINT, {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
