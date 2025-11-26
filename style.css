@@ -176,6 +176,9 @@ h1 {
   -webkit-appearance: none;
   -moz-appearance: none;
 }
+.request-set select option {
+  color: #555;
+}
 .request-set select option[value=""] {
   color: #999;
 }
@@ -197,7 +200,7 @@ h1 {
   font-weight: 900;
   -webkit-font-smoothing: antialiased;
   color: #555;
-  top:50%;
+  top:calc(50% - 6px);
   right:25px;
   transform:translateY(-50%);
   pointer-events: none;
