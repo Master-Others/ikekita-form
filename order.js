@@ -96,37 +96,42 @@ function createRequestSet() {
 
         <label class="main-label">店舗選択</label>
         <select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
-            <option value="">選択</option>
+            <option value="" disabled selected>選択</option>
             ${placeOptions}
         </select>
 
-        <label class="main-label">メンバー選択</label>
-        <select name="member_${requestCount}" required>
-            <option value="">選択</option>
-            ${memberOptions}
-            <option value="未登録">未登録</option>
-        </select>
-        <input type="text" name="member_custom_${requestCount}" placeholder="未登録者の場合はこちらに入力">
+        <div class="form-group required">
+            <label class="main-label">依頼メンバー選択</label>
+            <div class="select-wrapper">
+                <select name="member_${requestCount}" required>
+                    <option value="" disabled selected>選択</option>
+                    ${memberOptions}
+                </select>
+            </div>
+            <input type="text" name="member_custom_${requestCount}" placeholder="未登録の場合はこちらに入力">
+        </div>
 
-        <label class="main-label">業務区分</label>
-        <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
-            <option value="">選択</option>
-            <option value="バナー">バナー</option>
-            <option value="LP">LP</option>
-            <option value="料金表">料金表</option>
-            <option value="WEB">WEB</option>
-            <option value="グラビア">グラビア</option>
-            <option value="動画">動画</option>
-            <option value="画像全般">画像全般</option>
-            <option value="POPポスター">POPポスター</option>
-            <option value="名刺">名刺</option>
-            <option value="シール">シール</option>
-            <option value="のぼり">のぼり</option>
-            <option value="看板">看板</option>
-            <option value="避難経路図">避難経路図</option>
-            <option value="組織図">組織図</option>
-            <option value="その他">その他</option>
-        </select>
+        <div class="form-group required">
+            <label class="main-label">業務区分</label>
+            <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
+                <option value="" disabled selected>選択</option>
+                <option value="バナー">バナー</option>
+                <option value="LP">LP</option>
+                <option value="料金表">料金表</option>
+                <option value="WEB">WEB</option>
+                <option value="グラビア">グラビア</option>
+                <option value="動画">動画</option>
+                <option value="画像全般">画像全般</option>
+                <option value="POPポスター">POPポスター</option>
+                <option value="名刺">名刺</option>
+                <option value="シール">シール</option>
+                <option value="のぼり">のぼり</option>
+                <option value="看板">看板</option>
+                <option value="避難経路図">避難経路図</option>
+                <option value="組織図">組織図</option>
+                <option value="その他">その他</option>
+            </select>
+        </div>
 
         <label class="main-label">作業区分</label>
         <div class="checkbox-group">

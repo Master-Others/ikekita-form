@@ -143,11 +143,17 @@ h1 {
   margin: 10px 0 5px 5px;
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #2e78ff;
 }
 .required {
   color: #d93025;
   margin-left: 4px;
+}
+.required::after {
+  content: " *";
+  color: #d93025;
+  margin-left: 4px;
+  font-weight: bold;
 }
 
 .request-set select,
@@ -162,34 +168,32 @@ h1 {
   font-size: 14px;
   line-height: 1.8;
 }
-.request-set select {
+.request-set input::placeholder {
+  color: #999;
+}
+.request-set .select-wrapper select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+.select-wrapper {
   position: relative;
 }
-.request-set select:after {
+.select-wrapper:after {
   position: absolute;
   content:'\f107';
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  line-height: 1.8;
   color: #555;
-  width:0;
-  z-index:0;
-  position:absolute;
   top:50%;
   right:25px;
   transform:translateY(-50%);
+  pointer-events: none;
 }
-
-
-
+.request-set select option[value=""] {
+  color: #999;
+}
 select:focus,
 input:focus,
 textarea:focus {
