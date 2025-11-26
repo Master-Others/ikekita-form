@@ -149,7 +149,7 @@ h1 {
   color: #d93025;
   margin-left: 4px;
 }
-.required::after {
+.mark::after {
   content: " *";
   color: #d93025;
   margin-left: 4px;
@@ -171,10 +171,21 @@ h1 {
 .request-set input::placeholder {
   color: #999;
 }
+.request-set select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.request-set select option[value=""] {
+  color: #999;
+}
 .request-set .select-wrapper select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+.request-set .select-wrapper:invalid {
+  color: #999;
 }
 .select-wrapper {
   position: relative;
@@ -190,9 +201,6 @@ h1 {
   right:25px;
   transform:translateY(-50%);
   pointer-events: none;
-}
-.request-set select option[value=""] {
-  color: #999;
 }
 select:focus,
 input:focus,

@@ -101,7 +101,7 @@ function createRequestSet() {
         </select>
 
         <div class="form-group required">
-            <label class="main-label">依頼メンバー選択</label>
+            <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
                 <select name="member_${requestCount}" required>
                     <option value="" disabled selected>選択</option>
@@ -112,7 +112,7 @@ function createRequestSet() {
         </div>
 
         <div class="form-group required">
-            <label class="main-label">業務区分</label>
+            <label class="main-label mark">業務区分</label>
             <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
                 <option value="" disabled selected>選択</option>
                 <option value="バナー">バナー</option>
