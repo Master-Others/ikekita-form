@@ -3,7 +3,7 @@
 const GAS_ID = "m2";
 const GAS_URL = "AKfycbzqRe3EMTvQRTqPuOCC8TABFjxG4fyDP2VWiKFpoZDEXgBWH7j0xVVOZ9c0zGwxKaWNQw";
 
-// フォーム項目リスト（JSON文字列として埋め込まれ、JSでパースされる）
+// フォーム項目リスト(JSON文字列として埋め込まれ、JSでパースされる)
 const FORM_FIELDS = JSON.parse('["マリン池袋北口駅前店"]');
 const ENDPOINT = `https://script.google.com/macros/s/${GAS_URL}/exec`;
 
@@ -17,30 +17,6 @@ const CONFIG = {
 const MASTER_DATA = {
     members: []
 };
-
-// フォームの動的な生成 ---
-function buildForm() {
-    const container = document.getElementById('formFieldsContainer');
-
-    FORM_FIELDS.forEach(label => {
-        const div = document.createElement('div');
-        div.className = 'form-group';
-
-        const labelEl = document.createElement('label');
-        labelEl.textContent = label;
-        labelEl.htmlFor = label;
-
-        const inputEl = document.createElement('input');
-        inputEl.type = 'text';
-        inputEl.id = label;
-        inputEl.name = label;
-        inputEl.required = true;
-
-        div.appendChild(labelEl);
-        div.appendChild(inputEl);
-        container.appendChild(div);
-    });
-}
 
 
 
@@ -64,7 +40,7 @@ async function initApp() {
         // groupId と password をクエリパラメータとして送信
         const url = `${ENDPOINT}?password=${encodeURIComponent(password)}&groupId=${GAS_ID}`;
 
-        // 読み込み中であることを示す（簡易的）
+        // 読み込み中であることを示す(簡易的)
         document.body.style.cursor = "wait";
 
         const response = await fetch(url);
@@ -83,7 +59,6 @@ async function initApp() {
             CONFIG.AUTH_PASSWORD = password;
 
             // 4. 初期画面の描画を開始
-            buildForm(); // フォーム項目を動的生成
             setupEventHandlers();
             createRequestSet(); // 初期セット追加
 
@@ -107,29 +82,34 @@ function createRequestSet() {
         return `<option value="${member}">${member}</option>`;
     }).join('');
 
+    // FORM_FIELDSから店舗の選択肢を生成
+    const placeOptions = FORM_FIELDS.map(place => {
+        return `<option value="${place}">${place}</option>`;
+    }).join('');
+
     const div = document.createElement("div");
     div.className = "request-set";
 
     // HTML生成
     div.innerHTML = `
-        <h3 class="title2">【業務依頼】池本池別</h3>
+        <h3 class="title2">【業務依頼】${CONFIG.GROUP_NAME_FROM_SHEET}</h3>
 
         <label class="main-label">店舗選択</label>
-        <select name="place_${requestCount}" id="placeSelect">
+        <select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
             <option value="">選択</option>
-            <option value="マリン池袋本店">マリン池袋本店</option>
-            <option value="マリン池袋別館">マリン池袋別館</option>
+            ${placeOptions}
         </select>
 
         <label class="main-label">メンバー選択</label>
-        <select name="member_${requestCount}">
+        <select name="member_${requestCount}" required>
             <option value="">選択</option>
-            ${memberOptions} <option value="未登録">未登録</option>
+            ${memberOptions}
+            <option value="未登録">未登録</option>
         </select>
-        <input type="text" name="member_custom" placeholder="未登録者の場合はこちらに入力">
+        <input type="text" name="member_custom_${requestCount}" placeholder="未登録者の場合はこちらに入力">
 
         <label class="main-label">業務区分</label>
-        <select name="business_${requestCount}">
+        <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
             <option value="">選択</option>
             <option value="バナー">バナー</option>
             <option value="LP">LP</option>
@@ -188,7 +168,7 @@ function createRequestSet() {
             </label>
         </div>
 
-        <div class="main-block hidden" id="banner-size-block">
+        <div class="main-block hidden" id="banner-size-block_${requestCount}">
             <label class="main-label">バナー サイズ一覧</label>
             <div class="checkbox-group">
                 <label class="checkbox-label">
@@ -210,7 +190,7 @@ function createRequestSet() {
             </div>
         </div>
 
-        <div class="main-block hidden" id="print-size-block">
+        <div class="main-block hidden" id="print-size-block_${requestCount}">
             <label class="main-label">印刷関連 サイズ一覧</label>
             <div class="grid-table">
                 <div class="grid-header">
@@ -245,108 +225,128 @@ function createRequestSet() {
         </div>
 
         <label class="main-label">内訳</label>
-        <textarea name="details" placeholder="内訳を入力"></textarea>
+        <textarea name="details_${requestCount}" placeholder="内訳を入力" required></textarea>
 
         <label class="main-label">備考</label>
-        <textarea name="note"></textarea>
+        <textarea name="note_${requestCount}"></textarea>
     `;
+
     document.getElementById("requestContainer").appendChild(div);
-    }
 
-    // イベントハンドラの設定を関数化（初期化後に呼ぶため）
-    function setupEventHandlers() {
-        document.getElementById("addRequest").addEventListener("click", createRequestSet);
+    // 業務区分の変更イベントを設定
+    const businessSelect = div.querySelector('.business-select');
+    businessSelect.addEventListener('change', function() {
+        const index = this.dataset.index;
+        const bannerBlock = document.getElementById(`banner-size-block_${index}`);
+        const printBlock = document.getElementById(`print-size-block_${index}`);
 
-        document.getElementById("mainForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
+        if (this.value === 'バナー') {
+            bannerBlock.classList.remove('hidden');
+            printBlock.classList.add('hidden');
+        } else if (this.value === 'POPポスター' || this.value === 'のぼり' || this.value === '看板') {
+            bannerBlock.classList.add('hidden');
+            printBlock.classList.remove('hidden');
+        } else {
+            bannerBlock.classList.add('hidden');
+            printBlock.classList.add('hidden');
+        }
+    });
+}
 
-            const submitBtn = document.getElementById("submitBtn");
-            const resultDiv = document.getElementById("result");
+// イベントハンドラの設定を関数化(初期化後に呼ぶため)
+function setupEventHandlers() {
+    document.getElementById("addRequest").addEventListener("click", createRequestSet);
 
-            // ボタンを無効化
-            submitBtn.disabled = true;
-            submitBtn.textContent = '送信中...';
-            resultDiv.style.display = 'none';
+    document.getElementById("mainForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
 
-            const formData = new FormData(this);
-            const requests = [];
+        const submitBtn = document.getElementById("submitBtn");
+        const resultDiv = document.getElementById("result");
 
-            for (let i = 1; i <= requestCount; i++) {
-                // チェックボックスの値収集用ヘルパー
-                const getCheckedValues = (name) => {
-                    const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
-                    return Array.from(checked).map(cb => cb.value).join(', ');
-                };
+        // ボタンを無効化
+        submitBtn.disabled = true;
+        submitBtn.textContent = '送信中...';
+        resultDiv.style.display = 'none';
 
-                requests.push({
-                    // グループ名はフォーム入力ではなく、GASから取得したCONFIGの値を使用
-                    order_date: formData.get(`order_date_${i}`),
-                    order_time: formData.get(`order_time_${i}`),
-                    member: formData.get(`member_${i}`),
-                    member_custom: formData.get(`member_custom_${i}`),
-                    group: CONFIG.GROUP_NAME_FROM_SHEET,
-                    place: formData.get(`place_${i}`),
-                    business: formData.get(`business_${i}`),
-                    // checkbox系はformData.getだと1つしか取れない場合があるため、必要に応じてロジック調整推奨
-                    // ここでは簡易的にformData.getまたはカスタム収集
-                    category: getCheckedValues(`category_${i}`),
-                    details: formData.get(`details_${i}`),
-                    note: formData.get(`note_${i}`),
+        const formData = new FormData(this);
+        const requests = [];
 
-                    // 追加: サイズ情報の収集（例）
-                    size_banner: getCheckedValues(`size_banner_${i}`),
-                    print_normal: getCheckedValues(`print_normal_${i}`),
-                    print_photo: getCheckedValues(`print_photo_${i}`),
-                    print_back: getCheckedValues(`print_back_${i}`),
-                });
-            }
+        for (let i = 1; i <= requestCount; i++) {
+            // チェックボックスの値収集用ヘルパー
+            const getCheckedValues = (name) => {
+                const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+                return Array.from(checked).map(cb => cb.value).join(', ');
+            };
 
-            try {
-                // GASへ送信
-                const response = await fetch(ENDPOINT, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8'
-                    },
-                    // パスワードも送信データに含める場合はここで追加可能 requests配列を送る構成
-                    body: JSON.stringify({
-                        requests: requests,
-                        auth_password: CONFIG.AUTH_PASSWORD // 必要であれば認証用パスワードも再送
-                    })
-                });
+            requests.push({
+                // グループ名はフォーム入力ではなく、GASから取得したCONFIGの値を使用
+                order_date: formData.get(`order_date_${i}`),
+                order_time: formData.get(`order_time_${i}`),
+                member: formData.get(`member_${i}`),
+                member_custom: formData.get(`member_custom_${i}`),
+                group: CONFIG.GROUP_NAME_FROM_SHEET,
+                place: formData.get(`place_${i}`),
+                business: formData.get(`business_${i}`),
+                // checkbox系はformData.getだと1つしか取れない場合があるため、必要に応じてロジック調整推奨
+                // ここでは簡易的にformData.getまたはカスタム収集
+                category: getCheckedValues(`category_${i}`),
+                details: formData.get(`details_${i}`),
+                note: formData.get(`note_${i}`),
 
-                if (response.ok) {
-                    const result = await response.json();
+                // 追加: サイズ情報の収集(例)
+                size_banner: getCheckedValues(`size_banner_${i}`),
+                print_normal: getCheckedValues(`print_normal_${i}`),
+                print_photo: getCheckedValues(`print_photo_${i}`),
+                print_back: getCheckedValues(`print_back_${i}`),
+            });
+        }
 
-                    if (result.status === 'success' || result.result === 'success' || result.auth === true) {
-                        resultDiv.textContent = "送信が完了しました!";
-                        resultDiv.className = 'success';
-                        resultDiv.style.display = 'block';
+        try {
+            // GASへ送信
+            const response = await fetch(ENDPOINT, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                // パスワードも送信データに含める場合はここで追加可能 requests配列を送る構成
+                body: JSON.stringify({
+                    requests: requests,
+                    auth_password: CONFIG.AUTH_PASSWORD // 必要であれば認証用パスワードも再送
+                })
+            });
 
-                        // フォームをリセット
-                        this.reset();
-                        document.getElementById("requestContainer").innerHTML = "";
-                        requestCount = 0;
-                        createRequestSet();
-                    } else {
-                        throw new Error('GAS側でエラーが発生しました');
-                    }
+            if (response.ok) {
+                const result = await response.json();
+
+                if (result.status === 'success' || result.result === 'success' || result.auth === true) {
+                    resultDiv.textContent = "送信が完了しました!";
+                    resultDiv.className = 'success';
+                    resultDiv.style.display = 'block';
+
+                    // フォームをリセット
+                    this.reset();
+                    document.getElementById("requestContainer").innerHTML = "";
+                    requestCount = 0;
+                    createRequestSet();
                 } else {
-                    throw new Error('サーバーエラー');
+                    throw new Error('GAS側でエラーが発生しました');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.textContent = "送信に失敗しました。もう一度お試しください。";
-                resultDiv.className = 'error';
-                resultDiv.style.display = 'block';
-            } finally {
-                // ボタンを元に戻す
-                submitBtn.disabled = false;
-                submitBtn.textContent = '送信';
+            } else {
+                throw new Error('サーバーエラー');
             }
-        });
-    }
+        } catch (error) {
+            console.error('Error:', error);
+            resultDiv.textContent = "送信に失敗しました。もう一度お試しください。";
+            resultDiv.className = 'error';
+            resultDiv.style.display = 'block';
+        } finally {
+            // ボタンを元に戻す
+            submitBtn.disabled = false;
+            submitBtn.textContent = '送信';
+        }
+    });
+}
 
-    // DOM読み込み完了後に認証フロー(initApp)を開始
-    document.addEventListener('DOMContentLoaded', initApp);
+// DOM読み込み完了後に認証フロー(initApp)を開始
+document.addEventListener('DOMContentLoaded', initApp);
