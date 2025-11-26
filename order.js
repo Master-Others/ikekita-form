@@ -27,16 +27,23 @@ let requestCount = 0;
 
 // アプリケーション初期化関数
 async function initApp() {
-    // 1. パスワード入力プロンプト
+
+    // ローディング表示を追加
+    const requestContainer = document.getElementById("requestContainer");
+    requestContainer.innerHTML = '<div class="loading-message">NOW LOADING...</div>';
+
+
+    // パスワード入力プロンプト
     const password = prompt("認証パスワードを入力してください:");
 
     if (!password) {
         alert("パスワードが入力されませんでした。リロードして再試行してください。");
+        requestContainer.innerHTML = '';
         return;
     }
 
     try {
-        // 2. 認証リクエスト (GET)
+        // 認証リクエスト (GET)
         // groupId と password をクエリパラメータとして送信
         const url = `${ENDPOINT}?password=${encodeURIComponent(password)}&groupId=${GAS_ID}`;
 
@@ -49,16 +56,20 @@ async function initApp() {
         document.body.style.cursor = "default";
 
         if (data.auth === true) {
-            // 3. 認証成功: データを保存
+            // 認証成功: データを保存
             console.log("認証成功:", data);
 
             // GASのF2セルの値
             CONFIG.GROUP_NAME_FROM_SHEET = data.groupName;
+
             // メンバーリストの更新
             MASTER_DATA.members = data.members || [];
             CONFIG.AUTH_PASSWORD = password;
 
-            // 4. 初期画面の描画を開始
+            // ローディングメッセージをクリア
+            requestContainer.innerHTML = '';
+
+            // 初期画面の描画を開始
             setupEventHandlers();
             createRequestSet(); // 初期セット追加
 
@@ -71,6 +82,7 @@ async function initApp() {
         console.error(error);
         alert("サーバー通信エラーが発生しました。");
         document.body.style.cursor = "default";
+        requestContainer.innerHTML = '';
     }
 }
 
@@ -87,24 +99,30 @@ function createRequestSet() {
         return `<option value="${place}">${place}</option>`;
     }).join('');
 
+    // 店舗が1つだけの場合の処理
+    const placeSelectHTML = FORM_FIELDS.length === 1
+        ? `<input type="text" name="place_${requestCount}" value="${FORM_FIELDS[0]}" readonly class="readonly-input">`
+        : `<select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
+            <option value="">未選択に戻す</option>
+            ${placeOptions}
+        </select>`;
+
     const div = document.createElement("div");
     div.className = "request-set";
 
     // HTML生成
     div.innerHTML = `
-        <h3 class="title2">【業務依頼】${CONFIG.GROUP_NAME_FROM_SHEET}</h3>
+        <h3 class="title2">フォームを入力してください</h3>
 
         <label class="main-label">店舗選択</label>
-        <select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
-            <option value="" disabled selected>選択</option>
-            ${placeOptions}
-        </select>
+        ${placeSelectHTML}
 
         <div class="form-group required">
             <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
                 <select name="member_${requestCount}" required>
-                    <option value="" disabled selected>選択</option>
+                    <option value=""disabled selected>選択</option>
+                    <option value="">未選択に戻す</option>
                     ${memberOptions}
                 </select>
             </div>
@@ -113,64 +131,73 @@ function createRequestSet() {
 
         <div class="form-group required">
             <label class="main-label mark">業務区分</label>
-            <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
-                <option value="" disabled selected>選択</option>
-                <option value="バナー">バナー</option>
-                <option value="LP">LP</option>
-                <option value="料金表">料金表</option>
-                <option value="WEB">WEB</option>
-                <option value="グラビア">グラビア</option>
-                <option value="動画">動画</option>
-                <option value="画像全般">画像全般</option>
-                <option value="POPポスター">POPポスター</option>
-                <option value="名刺">名刺</option>
-                <option value="シール">シール</option>
-                <option value="のぼり">のぼり</option>
-                <option value="看板">看板</option>
-                <option value="避難経路図">避難経路図</option>
-                <option value="組織図">組織図</option>
-                <option value="その他">その他</option>
-            </select>
+            <div class="select-wrapper">
+                <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
+                    <option value=""disabled selected>選択</option>
+                    <option value="バナー">バナー</option>
+                    <option value="LP">LP</option>
+                    <option value="料金表">料金表</option>
+                    <option value="WEB">WEB</option>
+                    <option value="グラビア">グラビア</option>
+                    <option value="動画">動画</option>
+                    <option value="画像全般">画像全般</option>
+                    <option value="POPポスター">POPポスター</option>
+                    <option value="名刺">名刺</option>
+                    <option value="シール">シール</option>
+                    <option value="のぼり">のぼり</option>
+                    <option value="看板">看板</option>
+                    <option value="避難経路図">避難経路図</option>
+                    <option value="組織図">組織図</option>
+                    <option value="その他">その他</option>
+                    <option value="">未選択に戻す</option>
+                </select>
+            </div>
         </div>
 
         <label class="main-label">作業区分</label>
         <div class="checkbox-group">
             <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="新規作成">
+                <input type="checkbox" name="category_${requestCount}" value="新規作成" class="category-checkbox" data-index="${requestCount}">
                 <span>新規作成</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="修正">
+                <input type="checkbox" name="category_${requestCount}" value="修正" class="category-checkbox" data-index="${requestCount}">
                 <span>修正</span>
             </label>
             <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="文言変更">
-                <span>文言変更</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="画像差し替え">
-                <span>画像差し替え</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="サイズ変更">
-                <span>サイズ変更</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="サイズ追加">
-                <span>サイズ追加</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="キャスト追加">
-                <span>キャスト追加</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="メンバー追加">
-                <span>メンバー追加</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="その他">
+                <input type="checkbox" name="category_${requestCount}" value="その他" class="category-checkbox" data-index="${requestCount}">
                 <span>その他</span>
             </label>
+        </div>
+
+        <div class="main-block hidden" id="new-create-block_${requestCount}">
+            <label class="main-label">パターン・種類数</label>
+            <input type="number" name="pattern_count_${requestCount}" min="1" placeholder="数値を入力">
+
+            <label class="main-label">サイズ数</label>
+            <input type="number" name="size_count_${requestCount}" min="1" placeholder="数値を入力">
+        </div>
+
+        <div class="main-block hidden" id="modify-block_${requestCount}">
+            <label class="main-label">修正内容</label>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="文言変更">
+                    <span>文言変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="画像変更">
+                    <span>画像変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="サイズ変更">
+                    <span>サイズ変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="その他">
+                    <span>その他</span>
+                </label>
+            </div>
         </div>
 
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
@@ -256,6 +283,31 @@ function createRequestSet() {
             printBlock.classList.add('hidden');
         }
     });
+
+    // 4. 作業区分のチェックボックスイベント設定
+    const categoryCheckboxes = div.querySelectorAll('.category-checkbox');
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const index = this.dataset.index;
+            const newCreateBlock = document.getElementById(`new-create-block_${index}`);
+            const modifyBlock = document.getElementById(`modify-block_${index}`);
+
+            const isNewCreateChecked = div.querySelector(`input[name="category_${index}"][value="新規作成"]`).checked;
+            const isModifyChecked = div.querySelector(`input[name="category_${index}"][value="修正"]`).checked;
+
+            if (isNewCreateChecked) {
+                newCreateBlock.classList.remove('hidden');
+            } else {
+                newCreateBlock.classList.add('hidden');
+            }
+
+            if (isModifyChecked) {
+                modifyBlock.classList.remove('hidden');
+            } else {
+                modifyBlock.classList.add('hidden');
+            }
+        });
+    });
 }
 
 // イベントハンドラの設定を関数化(初期化後に呼ぶため)
@@ -282,6 +334,31 @@ function setupEventHandlers() {
                 const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
                 return Array.from(checked).map(cb => cb.value).join(', ');
             };
+
+            // 4. 作業区分の処理
+            const categoryValues = getCheckedValues(`category_${i}`);
+            let categoryOutput = categoryValues;
+
+            // 新規作成が選ばれている場合
+            if (categoryValues.includes('新規作成')) {
+                const patternCount = formData.get(`pattern_count_${i}`) || '';
+                const sizeCount = formData.get(`size_count_${i}`) || '';
+
+                if (patternCount || sizeCount) {
+                    const business = formData.get(`business_${i}`);
+                    categoryOutput = `${business}`;
+                    if (patternCount) categoryOutput += `/${patternCount}種`;
+                    if (sizeCount) categoryOutput += `/${sizeCount}サイズ`;
+                }
+            }
+
+            // 修正が選ばれている場合
+            if (categoryValues.includes('修正')) {
+                const modifyTypes = getCheckedValues(`modify_type_${i}`);
+                if (modifyTypes) {
+                    categoryOutput += ` (${modifyTypes})`;
+                }
+            }
 
             requests.push({
                 // グループ名はフォーム入力ではなく、GASから取得したCONFIGの値を使用
