@@ -114,8 +114,10 @@ function createRequestSet() {
     div.innerHTML = `
         <h3 class="title2">フォームを入力してください</h3>
 
-        <label class="main-label">店舗選択</label>
-        ${placeSelectHTML}
+        <label class="main-label mark">店舗選択</label>
+        <div class="select-wrapper">
+            ${placeSelectHTML}
+        </div>
 
         <div class="form-group required">
             <label class="main-label mark">依頼メンバー選択</label>
@@ -123,10 +125,10 @@ function createRequestSet() {
                 <select name="member_${requestCount}" required>
                     <option value="">選択</option>
                     ${memberOptions}
-                    <option value="">未登録者</option>
+                    <option value="未登録者">未登録者</option>
                 </select>
             </div>
-            <input type="text" name="member_custom_${requestCount}" placeholder="未登録の場合はこちらに入力">
+            <input type="text" name="member_custom_${requestCount}" placeholder="未登録者の場合はこちらに入力">
         </div>
 
         <div class="form-group required">
@@ -154,81 +156,77 @@ function createRequestSet() {
         </div>
 
         <label class="main-label">作業区分</label>
-        <div class="checkbox-group">
-            <label class="checkbox-label category-label-wrapper">
-                <input type="checkbox" name="category_${requestCount}" value="新規作成" class="category-checkbox" data-index="${requestCount}">
-                <span>新規作成</span>
-                <div class="inline-inputs hidden" id="new-create-inline_${requestCount}">
-                    <span class="input-label">パターン数</span>
-                    <input type="number" name="pattern_count_${requestCount}" min="1" placeholder="0" class="inline-number-input">
-                    <span class="input-label">サイズ数</span>
-                    <input type="number" name="size_count_${requestCount}" min="1" placeholder="0" class="inline-number-input">
+            <div class="checkbox-group">
+                <div class="category-label-wrapper">
+                    <div class="accordion-item" id="item-1">
+                        <div class="accordion-header">
+                        <span class="item-title">項目A</span>
+                        
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="enable-check"> 
+                            <span>有効</span>
+                        </label>
+
+                        <div class="input-group">
+                            <span class="label-text">パターン数</span>
+                            <input type="number" class="num-input pattern-count-input" min="1" max="30" placeholder="0">
+                            <button type="button" class="set-btn">SET</button>
+                        </div>
+                        </div>
+
+                        <div class="accordion-content">
+                        <div class="rows-container"></div>
+                        
+                        <div class="details-area">
+                            <label class="main-label">内訳</label>
+                            <textarea class="sync-target" placeholder="自動入力されます"></textarea>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-2">
+                        <div class="accordion-header">
+                        <span class="item-title">項目B</span>
+                        <label class="checkbox-label"><input type="checkbox" class="enable-check"> <span>有効</span></label>
+                        <div class="input-group">
+                            <span class="label-text">パターン数</span>
+                            <input type="number" class="num-input pattern-count-input" min="1" max="30" placeholder="0">
+                            <button type="button" class="set-btn">SET</button>
+                        </div>
+                        </div>
+                        <div class="accordion-content">
+                        <div class="rows-container"></div>
+                        <div class="details-area">
+                            <label class="main-label">内訳</label>
+                            <textarea class="sync-target" placeholder="自動入力されます"></textarea>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-3">
+                        <div class="accordion-header">
+                        <span class="item-title">項目C</span>
+                        <label class="checkbox-label"><input type="checkbox" class="enable-check"> <span>有効</span></label>
+                        <div class="input-group">
+                            <span class="label-text">パターン数</span>
+                            <input type="number" class="num-input pattern-count-input" min="1" max="30" placeholder="0">
+                            <button type="button" class="set-btn">SET</button>
+                        </div>
+                        </div>
+                        <div class="accordion-content">
+                        <div class="rows-container"></div>
+                        <div class="details-area">
+                            <label class="main-label">内訳</label>
+                            <textarea class="sync-target" placeholder="自動入力されます"></textarea>
+                        </div>
+                        </div>
+                    </div>
+
                 </div>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="修正" class="category-checkbox" data-index="${requestCount}">
-                <span>修正</span>
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" name="category_${requestCount}" value="その他" class="category-checkbox" data-index="${requestCount}">
-                <span>その他</span>
-            </label>
-        </div>
-
-        <div class="main-block hidden" id="new-create-block_${requestCount}">
-            <label class="main-label">パターン・種類数</label>
-            <input type="number" name="pattern_count_${requestCount}" min="1" placeholder="数値を入力">
-
-            <label class="main-label">サイズ数</label>
-            <input type="number" name="size_count_${requestCount}" min="1" placeholder="数値を入力">
-        </div>
-
-        <div class="main-block hidden" id="modify-block_${requestCount}">
-            <label class="main-label">修正内容</label>
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="文言変更">
-                    <span>文言変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="画像変更">
-                    <span>画像変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="サイズ変更">
-                    <span>サイズ変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="その他">
-                    <span>その他</span>
-                </label>
             </div>
         </div>
 
-        <div class="main-block hidden" id="modify-block_${requestCount}">
-            <label class="main-label">修正内容</label>
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="文言変更">
-                    <span>文言変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="画像変更">
-                    <span>画像変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="サイズ変更">
-                    <span>サイズ変更</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="modify_type_${requestCount}" value="その他">
-                    <span>その他</span>
-                </label>
-            </div>
-        </div>
 
-        <label class="main-label">内訳</label>
-        <textarea name="details_${requestCount}" placeholder="内訳を入力" required></textarea>
 
         <div class="size-buttons">
             <button type="button" class="size-toggle-btn" data-target="banner-size-block_${requestCount}">バナーサイズ一覧</button>
@@ -296,6 +294,126 @@ function createRequestSet() {
     `;
 
     document.getElementById("requestContainer").appendChild(div);
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+    // 全てのアコーディオンアイテムに対して処理を適用
+    const items = document.querySelectorAll('.accordion-item');
+
+    items.forEach(item => {
+        const setBtn = item.querySelector('.set-btn');
+        const patternCountInput = item.querySelector('.pattern-count-input');
+        const contentArea = item.querySelector('.accordion-content');
+        const rowsContainer = item.querySelector('.rows-container');
+        const syncTextarea = item.querySelector('.sync-target');
+
+        // SETボタンクリック時の処理
+        setBtn.addEventListener('click', () => {
+        let count = parseInt(patternCountInput.value, 10);
+
+        // バリデーション：1〜30の間
+        if (isNaN(count) || count <= 0) return;
+        if (count > 30) {
+            alert('最大30までしか入力できません');
+            patternCountInput.value = 30;
+            count = 30;
+        }
+
+        // 既存の行をクリアして再生成
+        rowsContainer.innerHTML = '';
+
+        for (let i = 1; i <= count; i++) {
+            // 行を作成
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'generated-row';
+
+            // パターン名入力 (編集可能なテキスト)
+            const patternInput = document.createElement('input');
+            patternInput.type = 'text';
+            patternInput.className = 'pattern-text-input';
+            patternInput.placeholder = `パターン${i}`;
+            // 初期値としてプレースホルダーと同じ値を入れておくか、
+            // 空の場合は同期時にプレースホルダーを使うロジックにする
+            // ここでは空にしておき、同期時に値がなければプレースホルダーを使う処理にします
+
+            // 「サイズ数」ラベル
+            const sizeLabel = document.createElement('span');
+            sizeLabel.textContent = 'サイズ数';
+            sizeLabel.className = 'label-text';
+
+            // サイズ数入力 (数字2桁)
+            const sizeInput = document.createElement('input');
+            sizeInput.type = 'number';
+            sizeInput.className = 'num-input size-count-input';
+            sizeInput.min = '0';
+            sizeInput.max = '30';
+            sizeInput.placeholder = '0';
+
+            // イベントリスナー追加（入力時に同期処理を走らせる）
+            patternInput.addEventListener('input', updateDetails);
+            sizeInput.addEventListener('input', updateDetails);
+
+            // 要素を追加
+            rowDiv.appendChild(patternInput);
+            rowDiv.appendChild(sizeLabel);
+            rowDiv.appendChild(sizeInput);
+
+            rowsContainer.appendChild(rowDiv);
+        }
+
+        // エリアを表示する
+        contentArea.classList.add('active');
+
+        // 初回の同期実行
+        updateDetails();
+        });
+
+        // 入力制限（数字2桁、最大30）の汎用処理
+        // 動的に追加された要素にも効くように親要素でイベント委譲、または作成時に付与
+        // ここでは作成時にmax属性をつけているが、入力時の制御も追加
+        item.addEventListener('input', (e) => {
+        if (e.target.classList.contains('num-input')) {
+            let val = parseInt(e.target.value, 10);
+            if (val > 30) e.target.value = 30;
+            // 文字数制限（2桁）
+            if (e.target.value.length > 2) e.target.value = e.target.value.slice(0, 2);
+        }
+        });
+
+        // 同期処理関数
+        function updateDetails() {
+        const rows = rowsContainer.querySelectorAll('.generated-row');
+        let resultString = '';
+
+        rows.forEach((row, index) => {
+            const pInput = row.querySelector('.pattern-text-input');
+            const sInput = row.querySelector('.size-count-input');
+
+            // パターン名：入力があればそれ、なければplaceholderの値を使う
+            const pName = pInput.value.trim() !== '' ? pInput.value : pInput.placeholder;
+
+            // サイズ数：入力があればそれ、なければ空（または0）
+            const sCount = sInput.value;
+
+            // サイズ数が入力されている場合のみ文字列に追加、あるいは常に表示するか
+            // 要件：パターン1+「：」+「サイズ数数値」サイズ+
+            if (sCount) {
+            resultString += `${pName}：${sCount}サイズ、`;
+            }
+        });
+
+        // 末尾の「、」を削除したければ下記を有効化
+        // if (resultString.endsWith('、')) {
+        //   resultString = resultString.slice(0, -1);
+        // }
+
+        syncTextarea.value = resultString;
+        }
+    });
+
+    });
+
 
     // 業務区分の変更イベントを設定(削除: バナー/印刷サイズの自動表示は廃止)
 
