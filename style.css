@@ -165,7 +165,7 @@ h1 {
   font-size: 14px;
   line-height: 1.8;
 }
-.request-set .member-custom {
+.request-set .member_custom {
   margin-top: 10px;
 }
 .request-set input::placeholder {
