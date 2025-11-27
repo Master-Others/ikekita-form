@@ -103,7 +103,7 @@ function createRequestSet() {
     const placeSelectHTML = FORM_FIELDS.length === 1
         ? `<input type="text" name="place_${requestCount}" value="${FORM_FIELDS[0]}" readonly class="readonly-input">`
         : `<select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
-            <option value="">未選択に戻す</option>
+            <option value="">選択</option>
             ${placeOptions}
         </select>`;
 
@@ -121,9 +121,9 @@ function createRequestSet() {
             <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
                 <select name="member_${requestCount}" required>
-                    <option value=""disabled selected>選択</option>
-                    <option value="">未選択に戻す</option>
+                    <option value="">選択</option>
                     ${memberOptions}
+                    <option value="">未登録者</option>
                 </select>
             </div>
             <input type="text" name="member_custom_${requestCount}" placeholder="未登録の場合はこちらに入力">
@@ -133,7 +133,7 @@ function createRequestSet() {
             <label class="main-label mark">業務区分</label>
             <div class="select-wrapper">
                 <select name="business_${requestCount}" class="business-select" data-index="${requestCount}" required>
-                    <option value=""disabled selected>選択</option>
+                    <option value="">選択</option>
                     <option value="バナー">バナー</option>
                     <option value="LP">LP</option>
                     <option value="料金表">料金表</option>
@@ -149,16 +149,21 @@ function createRequestSet() {
                     <option value="避難経路図">避難経路図</option>
                     <option value="組織図">組織図</option>
                     <option value="その他">その他</option>
-                    <option value="">未選択に戻す</option>
                 </select>
             </div>
         </div>
 
         <label class="main-label">作業区分</label>
         <div class="checkbox-group">
-            <label class="checkbox-label">
+            <label class="checkbox-label category-label-wrapper">
                 <input type="checkbox" name="category_${requestCount}" value="新規作成" class="category-checkbox" data-index="${requestCount}">
                 <span>新規作成</span>
+                <div class="inline-inputs hidden" id="new-create-inline_${requestCount}">
+                    <span class="input-label">パターン数</span>
+                    <input type="number" name="pattern_count_${requestCount}" min="1" placeholder="0" class="inline-number-input">
+                    <span class="input-label">サイズ数</span>
+                    <input type="number" name="size_count_${requestCount}" min="1" placeholder="0" class="inline-number-input">
+                </div>
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" name="category_${requestCount}" value="修正" class="category-checkbox" data-index="${requestCount}">
@@ -200,23 +205,53 @@ function createRequestSet() {
             </div>
         </div>
 
+        <div class="main-block hidden" id="modify-block_${requestCount}">
+            <label class="main-label">修正内容</label>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="文言変更">
+                    <span>文言変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="画像変更">
+                    <span>画像変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="サイズ変更">
+                    <span>サイズ変更</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="modify_type_${requestCount}" value="その他">
+                    <span>その他</span>
+                </label>
+            </div>
+        </div>
+
+        <label class="main-label">内訳</label>
+        <textarea name="details_${requestCount}" placeholder="内訳を入力" required></textarea>
+
+        <div class="size-buttons">
+            <button type="button" class="size-toggle-btn" data-target="banner-size-block_${requestCount}">バナーサイズ一覧</button>
+            <button type="button" class="size-toggle-btn" data-target="print-size-block_${requestCount}">印刷サイズ一覧</button>
+        </div>
+
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
             <label class="main-label">バナー サイズ一覧</label>
             <div class="checkbox-group">
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1920x1080">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="1920x1080" class="size-checkbox" data-textarea="details_${requestCount}">
                     <span>1920x1080</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="640x640">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox" data-textarea="details_${requestCount}">
                     <span>640x640</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="700x300">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="700x300" class="size-checkbox" data-textarea="details_${requestCount}">
                     <span>700x300</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1500x500">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="1500x500" class="size-checkbox" data-textarea="details_${requestCount}">
                     <span>1500x500</span>
                 </label>
             </div>
@@ -234,30 +269,27 @@ function createRequestSet() {
                 </div>
                 <div class="grid-row">
                     <div class="grid-cell grid-label">普通紙 - ラミネート加工</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_normal_${requestCount}" value="A1"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_normal_${requestCount}" value="A2"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_normal_${requestCount}" value="A3"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_normal_${requestCount}" value="A4"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙 - ラミネート加工" data-size="A1" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙 - ラミネート加工" data-size="A2" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙 - ラミネート加工" data-size="A3" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙 - ラミネート加工" data-size="A4" data-textarea="details_${requestCount}"></label></div>
                 </div>
                 <div class="grid-row">
                     <div class="grid-cell grid-label">写真紙 - ラミネート加工</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_photo_${requestCount}" value="A1"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_photo_${requestCount}" value="A2"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_photo_${requestCount}" value="A3"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_photo_${requestCount}" value="A4"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙 - ラミネート加工" data-size="A1" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙 - ラミネート加工" data-size="A2" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙 - ラミネート加工" data-size="A3" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙 - ラミネート加工" data-size="A4" data-textarea="details_${requestCount}"></label></div>
                 </div>
                 <div class="grid-row">
                     <div class="grid-cell grid-label">内照紙 - ラミネート加工</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_back_${requestCount}" value="A1"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_back_${requestCount}" value="A2"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_back_${requestCount}" value="A3"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" name="print_back_${requestCount}" value="A4"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙 - ラミネート加工" data-size="A1" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙 - ラミネート加工" data-size="A2" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙 - ラミネート加工" data-size="A3" data-textarea="details_${requestCount}"></label></div>
+                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙 - ラミネート加工" data-size="A4" data-textarea="details_${requestCount}"></label></div>
                 </div>
             </div>
         </div>
-
-        <label class="main-label">内訳</label>
-        <textarea name="details_${requestCount}" placeholder="内訳を入力" required></textarea>
 
         <label class="main-label">備考</label>
         <textarea name="note_${requestCount}"></textarea>
@@ -265,40 +297,23 @@ function createRequestSet() {
 
     document.getElementById("requestContainer").appendChild(div);
 
-    // 業務区分の変更イベントを設定
-    const businessSelect = div.querySelector('.business-select');
-    businessSelect.addEventListener('change', function() {
-        const index = this.dataset.index;
-        const bannerBlock = document.getElementById(`banner-size-block_${index}`);
-        const printBlock = document.getElementById(`print-size-block_${index}`);
+    // 業務区分の変更イベントを設定(削除: バナー/印刷サイズの自動表示は廃止)
 
-        if (this.value === 'バナー') {
-            bannerBlock.classList.remove('hidden');
-            printBlock.classList.add('hidden');
-        } else if (this.value === 'POPポスター' || this.value === 'のぼり' || this.value === '看板') {
-            bannerBlock.classList.add('hidden');
-            printBlock.classList.remove('hidden');
-        } else {
-            bannerBlock.classList.add('hidden');
-            printBlock.classList.add('hidden');
-        }
-    });
-
-    // 4. 作業区分のチェックボックスイベント設定
+    // 1. 作業区分のチェックボックスイベント設定
     const categoryCheckboxes = div.querySelectorAll('.category-checkbox');
     categoryCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const index = this.dataset.index;
-            const newCreateBlock = document.getElementById(`new-create-block_${index}`);
+            const newCreateInline = document.getElementById(`new-create-inline_${index}`);
             const modifyBlock = document.getElementById(`modify-block_${index}`);
 
             const isNewCreateChecked = div.querySelector(`input[name="category_${index}"][value="新規作成"]`).checked;
             const isModifyChecked = div.querySelector(`input[name="category_${index}"][value="修正"]`).checked;
 
             if (isNewCreateChecked) {
-                newCreateBlock.classList.remove('hidden');
+                newCreateInline.classList.remove('hidden');
             } else {
-                newCreateBlock.classList.add('hidden');
+                newCreateInline.classList.add('hidden');
             }
 
             if (isModifyChecked) {
@@ -306,6 +321,76 @@ function createRequestSet() {
             } else {
                 modifyBlock.classList.add('hidden');
             }
+        });
+    });
+
+    // 2. サイズボタンのトグル処理
+    const sizeButtons = div.querySelectorAll('.size-toggle-btn');
+    sizeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.dataset.target;
+            const targetBlock = document.getElementById(targetId);
+            targetBlock.classList.toggle('hidden');
+
+            // ボタンのテキストを変更
+            if (targetBlock.classList.contains('hidden')) {
+                this.textContent = this.textContent.replace('閉じる', '一覧');
+            } else {
+                this.textContent = this.textContent.replace('一覧', '閉じる');
+            }
+        });
+    });
+
+    // 2. バナーサイズチェックボックスのイベント
+    const sizeCheckboxes = div.querySelectorAll('.size-checkbox');
+    sizeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const textareaName = this.dataset.textarea;
+            const textarea = document.querySelector(`textarea[name="${textareaName}"]`);
+            const value = this.value;
+
+            if (this.checked) {
+                // チェックされたら追加
+                const currentValue = textarea.value;
+                if (currentValue) {
+                    textarea.value = currentValue + value + ',';
+                } else {
+                    textarea.value = value + ',';
+                }
+            } else {
+                // チェック外されたら削除
+                textarea.value = textarea.value.replace(value + ',', '');
+            }
+        });
+    });
+
+    // 2. 印刷サイズチェックボックスのイベント
+    const printCheckboxes = div.querySelectorAll('.print-size-checkbox');
+    printCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const textareaName = this.dataset.textarea;
+            const textarea = document.querySelector(`textarea[name="${textareaName}"]`);
+            const type = this.dataset.type;
+            const size = this.dataset.size;
+
+            // 同じタイプの全チェックボックスを取得
+            const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"][data-textarea="${textareaName}"]`);
+            const checkedSizes = Array.from(sameTypeCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.size);
+
+            // 現在のtextarea値を解析して、このタイプのエントリを更新
+            let lines = textarea.value.split(',').filter(l => l.trim());
+
+            // このタイプの既存エントリを削除
+            lines = lines.filter(line => !line.includes(type));
+
+            // チェックされたサイズがあれば新しいエントリを追加
+            if (checkedSizes.length > 0) {
+                lines.push(`${type}${checkedSizes.join(',')}`);
+            }
+
+            textarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
         });
     });
 }
@@ -335,7 +420,7 @@ function setupEventHandlers() {
                 return Array.from(checked).map(cb => cb.value).join(', ');
             };
 
-            // 4. 作業区分の処理
+            // 作業区分の処理
             const categoryValues = getCheckedValues(`category_${i}`);
             let categoryOutput = categoryValues;
 
@@ -361,25 +446,14 @@ function setupEventHandlers() {
             }
 
             requests.push({
-                // グループ名はフォーム入力ではなく、GASから取得したCONFIGの値を使用
-                order_date: formData.get(`order_date_${i}`),
-                order_time: formData.get(`order_time_${i}`),
                 member: formData.get(`member_${i}`),
                 member_custom: formData.get(`member_custom_${i}`),
                 group: CONFIG.GROUP_NAME_FROM_SHEET,
                 place: formData.get(`place_${i}`),
                 business: formData.get(`business_${i}`),
-                // checkbox系はformData.getだと1つしか取れない場合があるため、必要に応じてロジック調整推奨
-                // ここでは簡易的にformData.getまたはカスタム収集
-                category: getCheckedValues(`category_${i}`),
+                category: categoryOutput,
                 details: formData.get(`details_${i}`),
-                note: formData.get(`note_${i}`),
-
-                // 追加: サイズ情報の収集(例)
-                size_banner: getCheckedValues(`size_banner_${i}`),
-                print_normal: getCheckedValues(`print_normal_${i}`),
-                print_photo: getCheckedValues(`print_photo_${i}`),
-                print_back: getCheckedValues(`print_back_${i}`),
+                note: formData.get(`note_${i}`)
             });
         }
 
@@ -391,10 +465,9 @@ function setupEventHandlers() {
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8'
                 },
-                // パスワードも送信データに含める場合はここで追加可能 requests配列を送る構成
                 body: JSON.stringify({
                     requests: requests,
-                    auth_password: CONFIG.AUTH_PASSWORD // 必要であれば認証用パスワードも再送
+                    auth_password: CONFIG.AUTH_PASSWORD
                 })
             });
 
