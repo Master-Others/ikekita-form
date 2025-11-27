@@ -121,11 +121,17 @@ h1 {
 }
 
 .request-set {
-  margin: 20px 0;
-  padding: 15px;
+  margin: 10px 0;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #f9f9f9;
+}
+@media (min-width: 768px) {
+  .request-set {
+    margin: 20px 0;
+    padding: 15px;
+  }
 }
 
 .request-set .title2 {
@@ -221,29 +227,6 @@ textarea {
   min-height: 80px;
 }
 
-/* インライン入力欄のスタイル */
-.inline-inputs {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  margin-left: 20px;
-}
-.inline-number-input {
-  width: 50px;
-  padding: 5px;
-  border: 1px solid #999;
-  border-radius: 4px;
-}
-.input-label {
-  font-size: 14px;
-  color: #555;
-}
-
-.category-label-wrapper {
-  flex-direction: column;
-  align-items: flex-start;
-}
 
 .loading-message {
   text-align: center;
@@ -258,13 +241,16 @@ textarea {
 }
 
 /* サイズボタンのスタイル */
+.hidden {
+  display: none !important;
+}
 .size-buttons {
   display: flex;
   gap: 10px;
-  margin: 0 10px 0;
+  margin: 10px 0;
 }
 .size-toggle-btn {
-  padding: 8px 16px;
+  padding: 10px 5px;
   background-color: #f5a42a;
   color: white;
   border: none;
@@ -339,11 +325,60 @@ button:disabled {
 
 
 
+.question-icon {
+  margin-left: 10px;
+  cursor: pointer;
+  color: #555;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  width: 400px;
+  border-radius: 8px;
+}
+
+.close-btn {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+
+.category-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.category-label-wrapper {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.category-label {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  padding: 4px 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
 .checkbox-group {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 10px;
 }
 .checkbox-label {
   display: flex;
@@ -362,31 +397,31 @@ button:disabled {
   font-size: 14px;
 }
 .checkbox-label input[type="checkbox"] {
-  margin-right: 10px;
+  margin-right: 8px;
   cursor: pointer;
   width: 18px;
   height: 18px;
 }
 .grid-table {
   width: 100%;
-  border: 1px solid #ddd;
+  border: 1px solid #999;
   border-radius: 4px;
   overflow: hidden;
 }
 .grid-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
   background: #f8f9fa;
-  font-weight: 500;
+  font-weight: 400;
 }
 .grid-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  border-top: 1px solid #ddd;
+  grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
+  border-top: 1px solid #999;
 }
 .grid-cell {
-  padding: 12px;
-  border-right: 1px solid #ddd;
+  padding: 3px 5px;
+  border-right: 1px solid #999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,6 +433,8 @@ button:disabled {
 .grid-label {
   justify-content: flex-start;
   font-weight: 400;
+  font-size: 14px;
+  text-align: left;
 }
 .grid-checkbox {
   display: flex;
@@ -423,20 +460,29 @@ button:disabled {
   border-bottom: none;
 }
 .accordion-header {
-  padding: 15px;
+  padding: 10px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 768px) {
+  .accordion-header {
+    justify-content: flex-start;
+  }
 }
 
 .item-title {
-  font-weight: bold;
-  font-size: 16px;
+  font-size: 14px;
   margin-right: 10px;
-  min-width: 80px;
+  width: auto;
+}
+@media (min-width: 768px) {
+  .item-title {
+    width: 110px;
+  }
 }
 
-/* --- 入力エリアのスタイル --- */
 .input-group {
   display: flex;
   align-items: center;
@@ -445,12 +491,11 @@ button:disabled {
 .label-text {
   font-size: 14px;
   color: #333;
+  width: 70px;
 }
-
-/* 数字入力 */
-.num-input {
-  width: 50px;
-  padding: 5px;
+.input-group .num-input {
+  width: 45px;
+  padding: 0px;
   border: 1px solid #999;
   border-radius: 4px;
   text-align: center;
@@ -461,14 +506,24 @@ button:disabled {
   background-color: #555;
   color: #fff;
   border: none;
-  padding: 6px 15px;
+  padding: 6px 5px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
+  width: 50px;
+  font-weight: normal;
+  letter-spacing: 2px;
+  margin-top: 1px;
+  margin-left: 10px;
 }
 .set-btn:hover {
-  background-color: #555;
+  background-color: #333;
+}
+@media (min-width: 768px) {
+  .set-btn {
+    padding: 5px 10px;
+  }
 }
 
 /* --- 展開されるコンテンツエリア --- */
@@ -480,7 +535,7 @@ button:disabled {
   padding: 0 15px;
 }
 .accordion-content.active {
-  padding: 15px;
+  padding: 10px;
   border-top: 1px dashed #ddd;
   overflow: visible; /* プルダウン等が切れないように */
   max-height: none;  /* JSで制御しない場合の簡易対応 */
@@ -490,15 +545,22 @@ button:disabled {
 .generated-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
-.pattern-text-input {
-  padding: 5px;
-  border: 1px solid #ccc;
+.generated-row .pattern-text-input {
+  width: calc(100% - 110px);
+  padding: 0px 5px;
+  border: 1px solid #999;
   border-radius: 4px;
-  width: 200px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.generated-row .label-text {
+  font-size: 14px;
+  color: #333;
+  width: 60px;
 }
 
 /* 内訳表示エリア（同期先） */
