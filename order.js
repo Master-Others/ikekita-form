@@ -434,24 +434,30 @@ function createRequestSet() {
     if (questionIcon && modal) {
         const closeBtn = modal.querySelector('.close-btn');
 
-        questionIcon.addEventListener('click', () => {
-            modal.style.display = 'block';
+        // 【修正】display: 'block' ではなく 'hidden' クラスを削除して表示
+        questionIcon.addEventListener('click', (e) => {
+            e.preventDefault(); // アイコンが<a>タグなどの場合、誤作動を防ぐため
+            modal.classList.remove('hidden');
         });
 
         if (closeBtn) {
+            // 【修正】display: 'none' ではなく 'hidden' クラスを追加して非表示
             closeBtn.addEventListener('click', () => {
-                modal.style.display = 'none';
+                modal.classList.add('hidden');
             });
         }
 
         // モーダル外クリックで閉じる処理
         const modalClickHandler = (e) => {
+            // e.targetがモーダル要素そのものであることを確認
+            // モーダル全体がクリックされ、その子がクリックされたわけではない場合
             if (e.target === modal) {
-                modal.style.display = 'none';
+                // 【修正】'hidden' クラスを追加して非表示
+                modal.classList.add('hidden');
             }
         };
 
-        // イベントリスナーを追加（重複を避けるため一度だけ）
+        // イベントリスナーを追加
         modal.addEventListener('click', modalClickHandler);
     }
 
