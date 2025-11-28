@@ -184,7 +184,7 @@ function createRequestSet() {
                     <div class="accordion-content">
                         <div class="rows-container"></div>
                         <div class="details-area">
-                            <label class="main-label">内訳</label>
+                            <label class="main-label mark">内訳</label>
                             <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
                         </div>
                     </div>
@@ -205,7 +205,7 @@ function createRequestSet() {
                     <div class="accordion-content">
                         <div class="rows-container"></div>
                         <div class="details-area">
-                            <label class="main-label">内訳</label>
+                            <label class="main-label mark">内訳</label>
                             <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
                         </div>
                     </div>
@@ -226,7 +226,7 @@ function createRequestSet() {
                     <div class="accordion-content">
                         <div class="rows-container"></div>
                         <div class="details-area">
-                            <label class="main-label">内訳</label>
+                            <label class="main-label mark">内訳</label>
                             <textarea class="sync-target" name="details_both_${requestCount}"></textarea>
                         </div>
                     </div>
@@ -247,7 +247,7 @@ function createRequestSet() {
                     <div class="accordion-content">
                         <div class="rows-container"></div>
                         <div class="details-area">
-                            <label class="main-label">内訳</label>
+                            <label class="main-label mark">内訳</label>
                             <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
                         </div>
                     </div>
@@ -271,9 +271,21 @@ function createRequestSet() {
                     <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox" data-textarea="note_${requestCount}">
                     <span>640x640</span>
                 </label>
+                <label class="checkbox-label">5
+                    <input type="checkbox" name="size_banner_${requestCount}" value="976x211" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <span>976x211</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="750x470" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <span>750x470</span>
+                </label>
                 <label class="checkbox-label">
                     <input type="checkbox" name="size_banner_${requestCount}" value="700x300" class="size-checkbox" data-textarea="note_${requestCount}">
                     <span>700x300</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="580x250" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <span>580x250</span>
                 </label>
                 <label class="checkbox-label">
                     <input type="checkbox" name="size_banner_${requestCount}" value="1500x500" class="size-checkbox" data-textarea="note_${requestCount}">

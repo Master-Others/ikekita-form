@@ -161,7 +161,6 @@ h1 {
 }
 
 .request-set select,
-.request-set textarea,
 .request-set input {
   width: 100%;
   padding: 10px;
@@ -224,7 +223,8 @@ textarea:focus {
 
 textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 52px;
+  padding: 5px;
 }
 
 
@@ -570,8 +570,8 @@ button:disabled {
 }
 textarea.sync-target {
   width: 100%;
-  height: 80px;
-  padding: 10px;
+  height: 52px;
+  padding: 5px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
