@@ -39,7 +39,7 @@ main {
 .main-wrap {
   max-width: 100%;
   margin: 0 auto;
-  padding: 0;
+  padding: 0 0 50px;
   background: #ffffff;
   overflow: hidden;
   border-bottom: 3px solid #fe6c6c;
@@ -48,7 +48,7 @@ main {
 @media (min-width: 768px) {
   .main-wrap {
       max-width: 760px;
-      padding: 0 10px;
+      padding: 0 10px 50px;
   }
 }
 
@@ -123,7 +123,7 @@ h1 {
 .request-set {
   margin: 10px 0;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #999;
   border-radius: 8px;
   background: #f9f9f9;
 }
@@ -133,6 +133,33 @@ h1 {
     padding: 15px;
   }
 }
+
+
+
+.request-set-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.delete-request-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+.delete-request-btn:hover {
+  background-color: #cc0000;
+}
+.delete-request-btn i {
+  margin-right: 5px;
+}
+
+
 
 .request-set .title2 {
   color: #333;
@@ -164,7 +191,7 @@ h1 {
 .request-set input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #999;
   border-radius: 5px;
   font-family: 'Kosugi Maru', sans-serif;
   font-size: 14px;
@@ -227,6 +254,17 @@ textarea {
   padding: 5px;
 }
 
+textarea.note-box {
+  width: 100%;
+  height: 52px;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid #999;
+  border-radius: 4px;
+  resize: vertical;
+  background-color: #fff;
+}
+
 
 .loading-message {
   text-align: center;
@@ -278,7 +316,7 @@ button {
   display: block;
   max-width: 330px;
   margin: 20px auto 0;
-  background: #5f7577;
+  background: #345873;
   color: white;
 }
 #addRequest:hover {
@@ -287,10 +325,10 @@ button {
 #submitBtn {
   display: block;
   max-width: 330px;
-  margin: 20px auto 50px;
+  margin: 20px auto;
 }
 button[type="submit"] {
-  background: #219247;
+  background: #0cab46;
   color: white;
 }
 button[type="submit"]:hover {
@@ -311,15 +349,19 @@ button:disabled {
   display: none;
 }
 #result.success {
-  background: #2984b9;
+  background: #1794dd;
   color: #ffffff;
-  border: 1px solid #8486e6;
   display: block;
 }
 #result.error {
+  max-width: 330px;
+  margin: 20px auto 0;
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
   background: #f8d7da;
   color: #721c24;
-  border: 1px solid #f5c6cb;
   display: block;
 }
 
@@ -360,7 +402,7 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #999;
   border-radius: 4px;
 }
 .category-label-wrapper {
@@ -371,7 +413,6 @@ button:disabled {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  padding: 4px 16px;
   cursor: pointer;
   transition: 0.2s;
 }
@@ -397,7 +438,7 @@ button:disabled {
   flex-flow: row wrap;
   align-items: center;
   padding: 4px 16px;
-  border: 1px solid #ddd;
+  border: 1px solid #999;
   border-radius: 4px;
   cursor: pointer;
   transition: 0.2s;
@@ -439,8 +480,11 @@ button:disabled {
   justify-content: center;
   text-align: center;
 }
+.grid-cell.none {
+  border-right: none;
+}
 .grid-cell:last-child {
-    border-right: none;
+  border-right: none;
 }
 .grid-label {
   justify-content: flex-start;
@@ -507,11 +551,12 @@ button:disabled {
   letter-spacing: -2px;
 }
 .input-group .num-input {
-  width: 45px;
+  width: 40px;
   padding: 0px;
   border: 1px solid #999;
   border-radius: 4px;
   text-align: center;
+  line-height: 1.6;
 }
 
 /* SETボタン */
@@ -519,15 +564,14 @@ button:disabled {
   background-color: #555;
   color: #fff;
   border: none;
-  padding: 6px 5px;
+  padding: 4px 0 4px 3px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
-  width: 50px;
+  width: 45px;
   font-weight: normal;
   letter-spacing: 2px;
-  margin-top: 1px;
   margin-left: 5px;
 }
 .set-btn:hover {
@@ -549,7 +593,7 @@ button:disabled {
 }
 .accordion-content.active {
   padding: 10px;
-  border-top: 1px dashed #ddd;
+  border-top: 1px dashed #999;
   overflow: visible; /* プルダウン等が切れないように */
   max-height: none;  /* JSで制御しない場合の簡易対応 */
 }
@@ -563,17 +607,18 @@ button:disabled {
   flex-wrap: wrap;
 }
 .generated-row .pattern-text-input {
-  width: calc(100% - 110px);
-  padding: 0px 5px;
+  width: calc(100% - 95px);
+  padding: 1px 3px 0;
   border: 1px solid #999;
   border-radius: 4px;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.6;
 }
 .generated-row .label-text {
   font-size: 12px;
   color: #333;
-  width: 50px;
+  width: 43px;
+  padding-bottom: 2px;
 }
 .generated-row .num-input {
   width: 45px;
@@ -593,7 +638,7 @@ textarea.sync-target {
   height: 52px;
   padding: 5px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid #999;
   border-radius: 4px;
   resize: vertical;
   background-color: #fff;

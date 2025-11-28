@@ -161,20 +161,94 @@ function createRequestSet() {
         return `<option value="${place}">${place}</option>`;
     }).join('');
 
+    // 前回の店舗選択値を取得
+    let previousPlace = '';
+    if (requestCount > 1) {
+        const prevPlaceInput = document.querySelector(`input[name="place_${requestCount - 1}"]`);
+        const prevPlaceSelect = document.querySelector(`select[name="place_${requestCount - 1}"]`);
+        if (prevPlaceInput) {
+            previousPlace = prevPlaceInput.value;
+        } else if (prevPlaceSelect) {
+            previousPlace = prevPlaceSelect.value;
+        }
+    }
+
     // 店舗が1つだけの場合の処理
-    const placeSelectHTML = FORM_FIELDS.length === 1
-        ? `<input type="text" name="place_${requestCount}" value="${FORM_FIELDS[0]}" readonly class="readonly-input">`
-        : `<select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
-            <option value="">選択</option>
-            ${placeOptions}
-        </select>`;
+    let placeSelectHTML;
+    if (FORM_FIELDS.length === 1) {
+        placeSelectHTML = `<input type="text" name="place_${requestCount}" value="${FORM_FIELDS[0]}" readonly class="readonly-input">`;
+    } else if (requestCount > 1 && previousPlace) {
+        // 2回目以降で前回の値がある場合
+        placeSelectHTML = `
+            <select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
+                <option value="">選択</option>
+                <option value="${previousPlace}" selected>同上 (${previousPlace})</option>
+                ${placeOptions}
+            </select>`;
+    } else {
+        placeSelectHTML = `
+            <select name="place_${requestCount}" id="placeSelect_${requestCount}" required>
+                <option value="">選択</option>
+                ${placeOptions}
+            </select>`;
+    }
+
+
+
+    // 前回の依頼メンバー値を取得
+    let previousMember = '';
+    let previousMemberCustom = '';
+    if (requestCount > 1) {
+        const prevMemberSelect = document.querySelector(`select[name="member_${requestCount - 1}"]`);
+        const prevMemberCustomInput = document.querySelector(`input[name="member_custom_${requestCount - 1}"]`);
+        if (prevMemberSelect) {
+            previousMember = prevMemberSelect.value;
+        }
+        if (prevMemberCustomInput) {
+            previousMemberCustom = prevMemberCustomInput.value;
+        }
+    }
+
+    // メンバー選択のHTML生成
+    let memberSelectHTML = '';
+    let memberCustomHTML = '';
+
+    if (requestCount > 1 && (previousMember || previousMemberCustom)) {
+        // 2回目以降で前回の値がある場合
+        const displayText = previousMemberCustom || previousMember;
+        memberSelectHTML = `
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
+                <option value="">選択</option>
+                <option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>
+                ${memberOptions}
+                <option value="未登録者">未登録者</option>
+            </select>`;
+        memberCustomHTML = `<input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力" value="${previousMemberCustom}">`;
+    } else {
+        // 初回
+        memberSelectHTML = `
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
+                <option value="">選択</option>
+                ${memberOptions}
+                <option value="未登録者">未登録者</option>
+            </select>`;
+        memberCustomHTML = `<input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力">`;
+    }
+
+
+
 
     const div = document.createElement("div");
     div.className = "request-set";
 
     // HTML生成
     div.innerHTML = `
-        <h3 class="title2">フォームを入力してください</h3>
+        <div class="request-set-header">
+            <h3 class="title2">フォームを入力してください</h3>
+            <button type="button" class="delete-request-btn" data-request-id="${requestCount}">
+                <i class="fas fa-times"></i> 削除
+            </button>
+        </div>
 
         <label class="main-label mark">店舗選択</label>
         <div class="select-wrapper">
@@ -184,13 +258,9 @@ function createRequestSet() {
         <div class="form-group required">
             <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
-                <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
-                    <option value="">選択</option>
-                    ${memberOptions}
-                    <option value="未登録者">未登録者</option>
-                </select>
+                ${memberSelectHTML}
             </div>
-            <input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力">
+            ${memberCustomHTML}
         </div>
 
         <div class="form-group required">
@@ -217,101 +287,244 @@ function createRequestSet() {
             </div>
         </div>
 
-        <label class="main-label mark">作業区分 <i class="far fa-question-circle question-icon"></i></label>
-        <!-- モーダル -->
-        <div id="explanationModal_${requestCount}" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <p>
-                パターン数（何種類の制作をするか・何の制作をするか）を入力（最大9まで）、<br>
-                SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                各説明欄（制作するものが分かるよう）を入力し、サイズ数（横 x 縦が異なる制作物がいくつ必要か）を入力（最大20まで）
-                </p>
+        <div class="work-category-wrapper" id="workCategoryWrapper_${requestCount}" style="display: none;">
+            <label class="main-label mark">作業区分 <i class="far fa-question-circle question-icon"></i></label>
+
+            <!-- グループ1用モーダル -->
+            <div id="explanationModal_group1_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group1">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【作業区分の入力方法】</strong><br>
+                    パターン数（何種類の制作をするか・何の制作をするか）を入力（最大9まで）、<br>
+                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    各説明欄（制作するものが分かるよう）を入力し、サイズ数（横 x 縦が異なる制作物がいくつ必要か）を入力（最大20まで）
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="category-box">
-            <div class="category-label-wrapper">
-                <div class="accordion-item" id="item-1_${requestCount}">
-                    <div class="accordion-header">
-                        <label class="category-label">
-                            <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成">
-                            <span class="item-title">新規作成</span>
-                        </label>
-                        <div class="input-group">
-                            <span class="label-text">パターン数</span>
-                            <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
-                            <button type="button" class="set-btn">SET</button>
+
+            <!-- グループ2用モーダル -->
+            <div id="explanationModal_group2_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group2">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【映像・画像制作の入力方法】</strong><br>
+                    パターン数（何種類の映像・画像を制作するか）を入力（最大9まで）、<br>
+                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    各説明欄に動画の長さや画像の用途を入力し、必要な枚数・本数を入力してください。
+                    </p>
+                </div>
+            </div>
+
+            <!-- グループ3用モーダル -->
+            <div id="explanationModal_group3_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group3">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【印刷物制作の入力方法】</strong><br>
+                    パターン数（何種類の印刷物を制作するか）を入力（最大9まで）、<br>
+                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    各説明欄に印刷サイズ（A4、A3など）と枚数を入力してください。
+                    </p>
+                </div>
+            </div>
+
+            <!-- グループ4用モーダル -->
+            <div id="explanationModal_group4_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group4">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【図面制作の入力方法】</strong><br>
+                    パターン数（何種類の図面を制作するか）を入力（最大9まで）、<br>
+                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    各説明欄に建物名や階数など、図面の詳細を入力してください。
+                    </p>
+                </div>
+            </div>
+
+            <!-- グループ5用モーダル -->
+            <div id="explanationModal_group5_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group5">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【その他制作の入力方法】</strong><br>
+                    パターン数（何種類の制作をするか）を入力（最大9まで）、<br>
+                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    各説明欄に制作内容の詳細を入力してください。
+                    </p>
+                </div>
+            </div>
+
+            <!-- グループ1: バナー、料金表 で共通 -->
+            <div class="category-box category-box-group1" data-business="バナー,料金表" style="display: none;">
+                <div class="category-label-wrapper">
+                    <div class="accordion-item" id="item-1_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成">
+                                <span class="item-title">新規作成</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="accordion-content">
-                        <div class="rows-container"></div>
-                        <div class="details-area">
-                            <label class="main-label mark">内訳</label>
-                            <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
+
+                    <div class="accordion-item" id="item-2_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
+                                <span class="item-title">修正</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-3_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="その他">
+                                <span class="item-title">その他</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="accordion-item" id="item-2_${requestCount}">
-                    <div class="accordion-header">
-                        <label class="category-label">
-                            <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
-                            <span class="item-title">修正</span>
-                        </label>
-                        <div class="input-group">
-                            <span class="label-text">パターン数</span>
-                            <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
-                            <button type="button" class="set-btn">SET</button>
+            <!-- グループ2: グラビア、組織図 で共通 -->
+            <div class="category-box category-box-group2" data-business="グラビア,組織図" style="display: none;">
+                <div class="category-label-wrapper">
+                    <div class="accordion-item" id="item-1_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成">
+                                <span class="item-title">新規作成</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="accordion-content">
-                        <div class="rows-container"></div>
-                        <div class="details-area">
-                            <label class="main-label mark">内訳</label>
-                            <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
+
+                    <div class="accordion-item" id="item-2_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
+                                <span class="item-title">修正</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-3_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="その他">
+                                <span class="item-title">その他</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="rows-container"></div>
+                            <div class="details-area">
+                                <label class="main-label mark">内訳</label>
+                                <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="accordion-item" id="item-3_${requestCount}">
-                    <div class="accordion-header">
-                        <label class="category-label">
-                            <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成/修正">
-                            <span class="item-title">新規作成/修正</span>
-                        </label>
-                        <div class="input-group">
-                            <span class="label-text">パターン数</span>
-                            <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
-                            <button type="button" class="set-btn">SET</button>
-                        </div>
-                    </div>
-                    <div class="accordion-content">
-                        <div class="rows-container"></div>
-                        <div class="details-area">
-                            <label class="main-label mark">内訳</label>
-                            <textarea class="sync-target" name="details_both_${requestCount}"></textarea>
-                        </div>
-                    </div>
-                </div>
+            <!-- グループ3: LP、WEB、動画、画像全般、避難経路図、名刺、シール、のぼり、看板、その他 で共通 -->
+            <div class="category-box category-box-group3" data-business="LP,WEB,動画,画像全般,避難経路図,名刺,シール,のぼり,看板,その他" style="display: none;">
+                <!-- グループ3の作業区分 -->
+            </div>
 
-                <div class="accordion-item" id="item-4_${requestCount}">
-                    <div class="accordion-header">
-                        <label class="category-label">
-                            <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="その他">
-                            <span class="item-title">その他</span>
-                        </label>
-                        <div class="input-group">
-                            <span class="label-text">パターン数</span>
-                            <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
-                            <button type="button" class="set-btn">SET</button>
-                        </div>
+            <!-- グループ4: POPポスター で共通 -->
+            <div class="category-box category-box-group4" data-business="POPポスター" style="display: none;">
+                <!-- グループ4の作業区分 -->
+            </div>
+            <div class="main-block hidden" id="print-size-block_${requestCount}">
+                <div class="grid-table">
+                    <div class="grid-header">
+                        <div class="grid-cell"></div>
+                        <div class="grid-cell">A1</div>
+                        <div class="grid-cell">A2</div>
+                        <div class="grid-cell">A3</div>
+                        <div class="grid-cell">A4</div>
                     </div>
-                    <div class="accordion-content">
-                        <div class="rows-container"></div>
-                        <div class="details-area">
-                            <label class="main-label mark">内訳</label>
-                            <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
-                        </div>
+                    <div class="grid-row">
+                        <div class="grid-cell grid-label">普通紙(ﾗﾐﾈｰﾄ加工)</div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A3" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A4" data-textarea="note_${requestCount}"></label></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell grid-label">写真紙(ﾗﾐﾈｰﾄ加工)</div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell grid-label">内照紙(ﾗﾐﾈｰﾄ加工)</div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
                     </div>
                 </div>
             </div>
@@ -333,7 +546,7 @@ function createRequestSet() {
                     <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox" data-textarea="note_${requestCount}">
                     <span>640x640</span>
                 </label>
-                <label class="checkbox-label">5
+                <label class="checkbox-label">
                     <input type="checkbox" name="size_banner_${requestCount}" value="976x211" class="size-checkbox" data-textarea="note_${requestCount}">
                     <span>976x211</span>
                 </label>
@@ -356,41 +569,77 @@ function createRequestSet() {
             </div>
         </div>
 
-        <div class="main-block hidden" id="print-size-block_${requestCount}">
-
-            <div class="grid-table">
-                <div class="grid-header">
-                    <div class="grid-cell"></div>
-                    <div class="grid-cell">A1</div>
-                    <div class="grid-cell">A2</div>
-                    <div class="grid-cell">A3</div>
-                    <div class="grid-cell">A4</div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-cell grid-label">普通紙(ﾗﾐﾈｰﾄ加工)</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A3" data-textarea="note_${requestCount}"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A4" data-textarea="note_${requestCount}"></label></div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-cell grid-label">写真紙(ﾗﾐﾈｰﾄ加工)</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-cell grid-label">内照紙(ﾗﾐﾈｰﾄ加工)</div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                    <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
-                </div>
-            </div>
-        </div>
-
         <label class="main-label">備考</label>
-        <textarea name="note_${requestCount}"></textarea>
+        <textarea class="note-box" name="note_${requestCount}"></textarea>
     `;
 
     document.getElementById("requestContainer").appendChild(div);
+
+    // 業務区分の変更イベント
+    const businessSelect = div.querySelector(`select[name="business_${requestCount}"]`);
+    const workCategoryWrapper = div.querySelector(`#workCategoryWrapper_${requestCount}`);
+    const allCategoryBoxes = div.querySelectorAll('.category-box');
+
+    if (businessSelect && workCategoryWrapper) {
+        businessSelect.addEventListener('change', function() {
+            const selectedBusiness = this.value;
+
+            if (selectedBusiness) {
+                // 作業区分エリアを表示
+                workCategoryWrapper.style.display = 'block';
+
+                // すべてのcategory-boxを非表示
+                allCategoryBoxes.forEach(box => {
+                    box.style.display = 'none';
+                });
+
+                // すべてのモーダルを非表示（クラス名で一括取得）
+                const allModals = div.querySelectorAll('.explanation-modal');
+                allModals.forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+
+                // 選択された業務区分に対応するcategory-boxとモーダルを探して表示
+                let foundBox = false;
+                let currentGroup = '';
+
+                allCategoryBoxes.forEach(box => {
+                    const businessList = box.getAttribute('data-business');
+                    if (businessList) {
+                        // カンマ区切りの業務区分リストを配列に変換
+                        const businesses = businessList.split(',').map(b => b.trim());
+                        // 選択された業務区分が含まれているか確認
+                        if (businesses.includes(selectedBusiness)) {
+                            box.style.display = 'block';
+                            foundBox = true;
+
+                            // グループ名を取得（例: category-box-group1 → group1）
+                            const classList = box.className.split(' ');
+                            const groupClass = classList.find(c => c.startsWith('category-box-group'));
+                            if (groupClass) {
+                                currentGroup = groupClass.replace('category-box-group', 'group');
+                            }
+                        }
+                    }
+                });
+
+                // 対応するグループのモーダルを表示可能な状態にする（hidden解除はしない、クリック時に表示）
+                // currentGroupを保存しておく
+                if (currentGroup) {
+                    workCategoryWrapper.setAttribute('data-current-group', currentGroup);
+                }
+
+                // 該当するboxが見つからない場合の処理（オプション）
+                if (!foundBox) {
+                    console.warn(`業務区分 "${selectedBusiness}" に対応するcategory-boxが見つかりません`);
+                }
+            } else {
+                // 未選択の場合は作業区分エリアを非表示
+                workCategoryWrapper.style.display = 'none';
+            }
+        });
+    }
+
 
     // 依頼メンバーのバリデーション処理
     const memberSelect = div.querySelector(`select[name="member_${requestCount}"]`);
@@ -427,39 +676,44 @@ function createRequestSet() {
         });
     }
 
-    // モーダル制御 - 追加した要素内のモーダルのみを対象にする
+    // モーダル制御 - グループに応じたモーダルを表示
     const questionIcon = div.querySelector('.question-icon');
-    const modal = div.querySelector(`#explanationModal_${requestCount}`);
+    const allModals = div.querySelectorAll('.explanation-modal');
 
-    if (questionIcon && modal) {
+    if (questionIcon) {
+        questionIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // 現在選択されているグループを取得
+            const currentGroup = workCategoryWrapper.getAttribute('data-current-group');
+
+            if (currentGroup) {
+                // 該当グループのモーダルを探して表示
+                const targetModal = div.querySelector(`#explanationModal_${currentGroup}_${requestCount}`);
+                if (targetModal) {
+                    targetModal.classList.remove('hidden');
+                }
+            }
+        });
+    }
+
+    // すべてのモーダルに閉じるボタンのイベントを設定
+    allModals.forEach(modal => {
         const closeBtn = modal.querySelector('.close-btn');
 
-        // 【修正】display: 'block' ではなく 'hidden' クラスを削除して表示
-        questionIcon.addEventListener('click', (e) => {
-            e.preventDefault(); // アイコンが<a>タグなどの場合、誤作動を防ぐため
-            modal.classList.remove('hidden');
-        });
-
         if (closeBtn) {
-            // 【修正】display: 'none' ではなく 'hidden' クラスを追加して非表示
             closeBtn.addEventListener('click', () => {
                 modal.classList.add('hidden');
             });
         }
 
         // モーダル外クリックで閉じる処理
-        const modalClickHandler = (e) => {
-            // e.targetがモーダル要素そのものであることを確認
-            // モーダル全体がクリックされ、その子がクリックされたわけではない場合
+        modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                // 【修正】'hidden' クラスを追加して非表示
                 modal.classList.add('hidden');
             }
-        };
-
-        // イベントリスナーを追加
-        modal.addEventListener('click', modalClickHandler);
-    }
+        });
+    });
 
 
     // SETボタンとアコーディオンのイベント設定(動的に追加された要素用)
@@ -557,7 +811,7 @@ function createRequestSet() {
 
                 // サイズ数が入力されている場合のみ文字列に追加
                 if (sCount) {
-                    resultString += `${pName}/${sCount}サイズ、`;
+                    resultString += `${pName}:${sCount}サイズ、`;
                 }
             });
 
@@ -580,10 +834,10 @@ function createRequestSet() {
                 // ボタンのテキストを変更するロジック
                 if (targetBlock.classList.contains('hidden')) {
                     // 隠れた → テキストを「一覧 ＋」に戻す
-                    this.innerHTML = '一覧 <i class="fa-solid fa-plus"></i>';
+                    this.innerHTML = '一覧 <i class="fas fa-plus"></i>';
                 } else {
                     // 表示された → テキストを「一覧 −」にする
-                    this.innerHTML = '一覧 <i class="fa-solid fa-minus"></i>';
+                    this.innerHTML = '一覧 <i class="fas fa-minus"></i>';
                 }
             }
         });
@@ -641,6 +895,21 @@ function createRequestSet() {
             textarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
         });
     });
+
+    // 削除ボタンのイベント
+    const deleteBtn = div.querySelector('.delete-request-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            if (requestCount <= 1) {
+                alert('最低1つのフォームは必要です。');
+                return;
+            }
+            if (confirm('このフォームを削除しますか?')) {
+                div.remove();
+                // requestCountは減らさない(IDの一意性を保つため)
+            }
+        });
+    }
 }
 
 // イベントハンドラの設定を関数化(初期化後に呼ぶため)
@@ -687,60 +956,62 @@ function setupEventHandlers() {
 
         // ボタンを無効化
         submitBtn.disabled = true;
-        submitBtn.textContent = '送信中...';
+        submitBtn.textContent = '・・・送信中・・・';
         resultDiv.style.display = 'none';
 
         const formData = new FormData(this);
         const requests = [];
 
         for (let i = 1; i <= requestCount; i++) {
-            // チェックボックスの値収集用ヘルパー
-            const getCheckedValues = (name) => {
-                const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
-                return Array.from(checked).map(cb => cb.value).join(', ');
-            };
+            // チェックボックスの値収集
+            const checkedCategories = document.querySelectorAll(`input[name="work_category_${i}"]:checked`);
 
-            // 作業区分の処理
-            const categoryValues = getCheckedValues(`category_${i}`);
-            let categoryOutput = categoryValues;
-
-            // 新規作成が選ばれている場合
-            if (categoryValues.includes('新規作成')) {
-                const patternCount = formData.get(`pattern_count_${i}`) || '';
-
-                if (patternCount || sizeCount) {
-                    const business = formData.get(`business_${i}`);
-                    categoryOutput = `${business}`;
-                    if (patternCount) categoryOutput += `/${patternCount}種`;
-                }
+            // メンバー名の決定
+            let memberName = formData.get(`member_${i}`);
+            const memberCustom = formData.get(`member_custom_${i}`);
+            if (memberCustom && memberCustom.trim() !== '') {
+                memberName = memberCustom;
             }
 
-            // 修正が選ばれている場合
-            if (categoryValues.includes('修正')) {
-                const modifyTypes = getCheckedValues(`modify_type_${i}`);
-                if (modifyTypes) {
-                    categoryOutput += ` (${modifyTypes})`;
-                }
-            }
-
-            // 新規作成/修正が選ばれている場合
-            if (categoryValues.includes('新規作成/修正')) {
-                const bothTypes = getCheckedValues(`both_type_${i}`);
-                if (bothTypes) {
-                    categoryOutput += ` (${bothTypes})`;
-                }
-            }
-
-            requests.push({
-                member: formData.get(`member_${i}`),
-                member_custom: formData.get(`member_custom_${i}`),
+            // 共通データ
+            const commonData = {
+                member: memberName,
+                member_custom: memberCustom,
                 group: CONFIG.GROUP_NAME_FROM_SHEET,
                 place: formData.get(`place_${i}`),
                 business: formData.get(`business_${i}`),
-                category: categoryOutput,
-                details: formData.get(`details_${i}`),
                 note: formData.get(`note_${i}`)
-            });
+            };
+
+            // 作業区分が選択されていない場合は1行だけ作成
+            if (checkedCategories.length === 0) {
+                requests.push({
+                    ...commonData,
+                    category: '',
+                    details: ''
+                });
+            } else {
+                // 各作業区分ごとに行を作成
+                checkedCategories.forEach(checkbox => {
+                    const categoryValue = checkbox.value;
+                    let detailsValue = '';
+
+                    // 対応するtextareaから内訳を取得
+                    if (categoryValue === '新規作成') {
+                        detailsValue = formData.get(`details_new_${i}`) || '';
+                    } else if (categoryValue === '修正') {
+                        detailsValue = formData.get(`details_modify_${i}`) || '';
+                    } else if (categoryValue === 'その他') {
+                        detailsValue = formData.get(`details_other_${i}`) || '';
+                    }
+
+                    requests.push({
+                        ...commonData,
+                        category: categoryValue,
+                        details: detailsValue
+                    });
+                });
+            }
         }
 
         try {
