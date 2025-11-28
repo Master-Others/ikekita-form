@@ -45,12 +45,18 @@ async function initApp() {
     try {
         // 認証リクエスト (GET)
         // groupId と password をクエリパラメータとして送信
-        const url = `${ENDPOINT}?password=${encodeURIComponent(password)}&groupId=${GAS_ID}`;
+        const url = `${ENDPOINT}?groupId=${encodeURIComponent(GAS_ID)}&password=${encodeURIComponent(password)}`;
 
         // 読み込み中であることを示す(簡易的)
         document.body.style.cursor = "wait";
 
         const response = await fetch(url);
+
+        // レスポンスのステータスチェック
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
         document.body.style.cursor = "default";
@@ -79,8 +85,8 @@ async function initApp() {
             location.reload();
         }
     } catch (error) {
-        console.error(error);
-        alert("サーバー通信エラーが発生しました。");
+        console.error("通信エラー詳細:", error);
+        alert(`サーバー通信エラーが発生しました。\n詳細: ${error.message}\n\nGAS_URLとGAS_IDの設定を確認してください。`);
         document.body.style.cursor = "default";
         requestContainer.innerHTML = '';
     }
