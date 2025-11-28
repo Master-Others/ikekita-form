@@ -184,13 +184,13 @@ function createRequestSet() {
         <div class="form-group required">
             <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
-                <select class="member-select" name="member_${requestCount}" required>
+                <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
                     <option value="">選択</option>
                     ${memberOptions}
                     <option value="未登録者">未登録者</option>
                 </select>
             </div>
-            <input class="member_custom" type="text" name="member_custom_${requestCount}" placeholder="未登録者の場合はこちらに入力">
+            <input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力">
         </div>
 
         <div class="form-group required">
@@ -217,7 +217,7 @@ function createRequestSet() {
             </div>
         </div>
 
-        <label class="main-label mark">作業区分 <i class="fa-regular fa-circle-question question-icon"></i></label>
+        <label class="main-label mark">作業区分 <i class="far fa-question-circle question-icon"></i></label>
         <!-- モーダル -->
         <div id="explanationModal_${requestCount}" class="modal hidden">
             <div class="modal-content">
@@ -391,6 +391,41 @@ function createRequestSet() {
     `;
 
     document.getElementById("requestContainer").appendChild(div);
+
+    // 依頼メンバーのバリデーション処理
+    const memberSelect = div.querySelector(`select[name="member_${requestCount}"]`);
+    const memberCustomInput = div.querySelector(`input[name="member_custom_${requestCount}"]`);
+
+    if (memberSelect && memberCustomInput) {
+        // セレクトボックス変更時の処理
+        memberSelect.addEventListener('change', function() {
+            if (this.value === '未登録者') {
+                // 未登録者を選択した場合、カスタム入力を必須にする
+                memberCustomInput.setAttribute('required', 'required');
+                memberCustomInput.style.borderColor = '#ff6b6b';
+            } else if (this.value !== '') {
+                // 登録メンバーを選択した場合、カスタム入力の必須を解除
+                memberCustomInput.removeAttribute('required');
+                memberCustomInput.style.borderColor = '';
+                memberCustomInput.value = ''; // 入力値をクリア
+            } else {
+                // 未選択の場合
+                memberCustomInput.removeAttribute('required');
+                memberCustomInput.style.borderColor = '';
+            }
+        });
+
+        // カスタム入力フィールドの入力時の処理
+        memberCustomInput.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                // カスタム入力に値がある場合、セレクトの必須を解除
+                memberSelect.removeAttribute('required');
+            } else {
+                // カスタム入力が空の場合、セレクトを必須に戻す
+                memberSelect.setAttribute('required', 'required');
+            }
+        });
+    }
 
     // モーダル制御 - 追加した要素内のモーダルのみを対象にする
     const questionIcon = div.querySelector('.question-icon');
@@ -608,6 +643,38 @@ function setupEventHandlers() {
 
     document.getElementById("mainForm").addEventListener("submit", async function(e) {
         e.preventDefault();
+
+        // カスタムバリデーション: 依頼メンバーのチェック
+        let validationError = false;
+        for (let i = 1; i <= requestCount; i++) {
+            const memberSelect = document.querySelector(`select[name="member_${i}"]`);
+            const memberCustomInput = document.querySelector(`input[name="member_custom_${i}"]`);
+
+            if (memberSelect && memberCustomInput) {
+                const selectValue = memberSelect.value;
+                const customValue = memberCustomInput.value.trim();
+
+                // セレクトが未選択 かつ カスタム入力も空の場合
+                if (selectValue === '' && customValue === '') {
+                    alert('依頼メンバーを選択するか、未登録者の名前を入力してください。');
+                    memberSelect.focus();
+                    validationError = true;
+                    break;
+                }
+
+                // 未登録者を選択したのにカスタム入力が空の場合
+                if (selectValue === '未登録者' && customValue === '') {
+                    alert('未登録者を選択した場合は、名前を入力してください。');
+                    memberCustomInput.focus();
+                    validationError = true;
+                    break;
+                }
+            }
+        }
+
+        if (validationError) {
+            return;
+        }
 
         const submitBtn = document.getElementById("submitBtn");
         const resultDiv = document.getElementById("result");
