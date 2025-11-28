@@ -50,8 +50,13 @@ async function initApp() {
         return;
     }
 
+    // 認証を待たずに、フォームを先行描画 ※メンバーリストは空の状態で描画されます
+    requestContainer.innerHTML = '';
+    setupEventHandlers();
+    createRequestSet();
+
     try {
-        // 認証リクエスト (GET)
+        // 認証リクエスト (GET)※裏側でGASへ問い合わせる
         // groupId と password をクエリパラメータとして送信
         const url = `${ENDPOINT}?groupId=${encodeURIComponent(GAS_ID)}&password=${encodeURIComponent(password)}`;
 
@@ -80,21 +85,19 @@ async function initApp() {
             MASTER_DATA.members = data.members || [];
             CONFIG.AUTH_PASSWORD = password;
 
-            // ローディングメッセージをクリア
-            requestContainer.innerHTML = '';
-
-            // 初期画面の描画を開始
-            setupEventHandlers();
-            createRequestSet(); // 初期セット追加
+            // 遅延反映：取得したメンバーリストを、既に表示されているフォームに適用する
+            updateMemberDropdowns();
 
         } else {
             // 認証失敗
+            // すでにフォームが見えてしまっているので、隠してリロード
+            document.querySelector("main").style.display = "none";
             alert("パスワードが違います。");
             location.reload();
         }
     } catch (error) {
         console.error("通信エラー詳細:", error);
-        alert(`サーバー通信エラーが発生しました。\n詳細: ${error.message}\n\nGAS_URLとGAS_IDの設定を確認してください。`);
+        alert(`サーバー通信エラーが発生しました。\n詳細: ${error.message}`);
         document.body.style.cursor = "default";
         requestContainer.innerHTML = '';
     }
