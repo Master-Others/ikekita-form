@@ -144,14 +144,16 @@ function updateMemberDropdowns() {
 function createRequestSet() {
     requestCount++;
 
-    const memberOptions = "";
+    let memberOptions = "";
 
     if (MASTER_DATA.members.length === 0) {
         // 通信待ちの状態（まだデータがない）
         memberOptions = `<option value="" disabled>データ読み込み中...</option>`;
     } else {
         // データがある状態（2行目の追加ボタンを押した時や、通信完了後）
-        memberOptions = MASTER_DATA.members.map(m => `<option value="${m}">${m}</option>`).join('');
+        memberOptions = MASTER_DATA.members.map(member => {
+            return `<option value="${member}">${member}</option>`;
+        }).join('');
     }
 
     // FORM_FIELDSから店舗の選択肢を生成
