@@ -38,9 +38,6 @@ async function initApp() {
         return;
     }
 
-    requestContainer.innerHTML = '<div class="loading-message">NOW LOADING...</div>';
-
-
     // パスワード入力プロンプト
     const password = prompt("認証パスワードを入力してください:");
 
@@ -103,13 +100,59 @@ async function initApp() {
     }
 }
 
+function updateMemberDropdowns() {
+
+    const selects = document.querySelectorAll('.member-select');
+
+    selects.forEach(select => {
+
+        // 現在の選択値を保持（もしユーザーが通信中に選んでいた場合のため）
+        const currentValue = select.value;
+
+        // 選択肢をクリア
+        select.innerHTML = '';
+
+        // デフォルトの空選択肢などを追加
+        const defaultOption = document.createElement('option');
+        defaultOption.text = "選択";
+        defaultOption.value = "";
+        select.appendChild(defaultOption);
+
+        // 取得したメンバーを追加
+        if (MASTER_DATA.members && MASTER_DATA.members.length > 0) {
+            MASTER_DATA.members.forEach(member => {
+                const option = document.createElement('option');
+                option.text = member; // 名前
+                option.value = member; // 値
+                select.appendChild(option);
+            });
+        }
+
+        // 固定の末尾オプション「未登録者」を追加
+        const unknownOption = document.createElement('option');
+        unknownOption.text = "未登録者";
+        unknownOption.value = "未登録者";
+        select.appendChild(unknownOption);
+
+        // 値を復元（もしあれば）
+        if(currentValue) {
+            select.value = currentValue;
+        }
+    });
+}
+
 function createRequestSet() {
     requestCount++;
 
-    // メンバーリストのoptionタグを生成 MASTER_DATA.members の配列から option を作成
-    const memberOptions = MASTER_DATA.members.map(member => {
-        return `<option value="${member}">${member}</option>`;
-    }).join('');
+    const memberOptions = "";
+
+    if (MASTER_DATA.members.length === 0) {
+        // 通信待ちの状態（まだデータがない）
+        memberOptions = `<option value="" disabled>データ読み込み中...</option>`;
+    } else {
+        // データがある状態（2行目の追加ボタンを押した時や、通信完了後）
+        memberOptions = MASTER_DATA.members.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
 
     // FORM_FIELDSから店舗の選択肢を生成
     const placeOptions = FORM_FIELDS.map(place => {
@@ -139,7 +182,7 @@ function createRequestSet() {
         <div class="form-group required">
             <label class="main-label mark">依頼メンバー選択</label>
             <div class="select-wrapper">
-                <select name="member_${requestCount}" required>
+                <select class="member-select" name="member_${requestCount}" required>
                     <option value="">選択</option>
                     ${memberOptions}
                     <option value="未登録者">未登録者</option>
