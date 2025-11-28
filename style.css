@@ -143,15 +143,32 @@ h1 {
   margin-bottom: 15px;
 }
 .delete-request-btn {
+  position: absolute;
   background-color: #ff4444;
-  color: white;
+  color: #ffffff;
+  text-align: center;
   border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  font-size: 12px;
+  line-height: 1;
+  transition: 0.3s;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  top: -16px;
+  right: -18px;
 }
+@media (min-width: 768px) {
+  .delete-request-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 14px;
+    line-height: 1.2;
+    top: 0px;
+    right: 0px;
+  }
+}
+
 .delete-request-btn:hover {
   background-color: #cc0000;
 }
@@ -201,7 +218,7 @@ h1 {
   margin-top: 10px;
 }
 .request-set input::placeholder {
-  color: #999;
+  color: #ccc;
 }
 .request-set select {
   appearance: none;
@@ -212,7 +229,7 @@ h1 {
   color: #555;
 }
 .request-set select option[value=""] {
-  color: #999;
+  color: #ccc;
 }
 .request-set .select-wrapper select {
   appearance: none;
@@ -220,7 +237,7 @@ h1 {
   -moz-appearance: none;
 }
 .request-set .select-wrapper:invalid {
-  color: #999;
+  color: #ccc;
 }
 .select-wrapper {
   position: relative;
@@ -607,7 +624,7 @@ button:disabled {
   flex-wrap: wrap;
 }
 .generated-row .pattern-text-input {
-  width: calc(100% - 95px);
+  width: calc(100% - 100px);
   padding: 1px 3px 0;
   border: 1px solid #999;
   border-radius: 4px;
