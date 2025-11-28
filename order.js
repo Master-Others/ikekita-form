@@ -30,6 +30,14 @@ async function initApp() {
 
     // ローディング表示を追加
     const requestContainer = document.getElementById("requestContainer");
+
+    // 要素が存在しない場合のエラーハンドリング
+    if (!requestContainer) {
+        console.error("requestContainer要素が見つかりません。HTMLに id='requestContainer' の要素があるか確認してください。");
+        alert("ページの初期化に失敗しました。ページを再読み込みしてください。");
+        return;
+    }
+
     requestContainer.innerHTML = '<div class="loading-message">NOW LOADING...</div>';
 
 
@@ -163,7 +171,7 @@ function createRequestSet() {
 
         <label class="main-label mark">作業区分 <i class="fa-regular fa-circle-question question-icon"></i></label>
         <!-- モーダル -->
-        <div id="explanationModal" class="modal hidden">
+        <div id="explanationModal_${requestCount}" class="modal hidden">
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
                 <p>
@@ -334,26 +342,35 @@ function createRequestSet() {
         <textarea name="note_${requestCount}"></textarea>
     `;
 
-    // モーダル制御
-    const questionIcon = document.querySelector('.question-icon');
-    const modal = document.getElementById('explanationModal');
-    const closeBtn = modal.querySelector('.close-btn');
-
-    questionIcon.addEventListener('click', () => {
-        modal.style.display = 'block';
-    });
-
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
     document.getElementById("requestContainer").appendChild(div);
+
+    // モーダル制御 - 追加した要素内のモーダルのみを対象にする
+    const questionIcon = div.querySelector('.question-icon');
+    const modal = div.querySelector(`#explanationModal_${requestCount}`);
+
+    if (questionIcon && modal) {
+        const closeBtn = modal.querySelector('.close-btn');
+
+        questionIcon.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // モーダル外クリックで閉じる処理
+        const modalClickHandler = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // イベントリスナーを追加（重複を避けるため一度だけ）
+        modal.addEventListener('click', modalClickHandler);
+    }
 
 
     // SETボタンとアコーディオンのイベント設定(動的に追加された要素用)
