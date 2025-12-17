@@ -296,9 +296,9 @@ function createRequestSet() {
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【作業区分の入力方法】</strong><br>
-                    パターン数（何種類の制作をするか・何の制作をするか）を入力（最大9まで）、<br>
+                    パターン数（何種類の制作をするか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各説明欄（制作するものが分かるよう）を入力し、サイズ数（横 x 縦が異なる制作物がいくつ必要か）を入力（最大20まで）
+                    各欄に（制作名・説明）を入力し、サイズ数（横 x 縦が異なる制作物がいくつ必要か）を入力（最大20まで）
                     </p>
                 </div>
             </div>
@@ -309,9 +309,9 @@ function createRequestSet() {
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【作業区分の入力方法】</strong><br>
-                    何の画像を制作するか）を入力（最大9まで）、<br>
+                    パターン数（何種類の画像を制作するか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各説明欄に動画の長さや画像の用途を入力し、必要な枚数・本数を入力してください。
+                    各欄に動画の長さや画像の用途を入力し、必要な枚数・本数を入力してください。
                     </p>
                 </div>
             </div>
@@ -324,7 +324,7 @@ function createRequestSet() {
                     <strong>【印刷物制作の入力方法】</strong><br>
                     パターン数（何種類の印刷物を制作するか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各説明欄に印刷サイズ（A4、A3など）と枚数を入力してください。
+                    各欄に印刷サイズ（A4、A3など）と枚数を入力してください。
                     </p>
                 </div>
             </div>
@@ -337,7 +337,7 @@ function createRequestSet() {
                     <strong>【図面制作の入力方法】</strong><br>
                     パターン数（何種類の図面を制作するか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各説明欄に建物名や階数など、図面の詳細を入力してください。
+                    各欄に建物名や階数など、図面の詳細を入力してください。
                     </p>
                 </div>
             </div>
@@ -350,7 +350,7 @@ function createRequestSet() {
                     <strong>【その他制作の入力方法】</strong><br>
                     パターン数（何種類の制作をするか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各説明欄に制作内容の詳細を入力してください。
+                    各欄に制作内容の詳細を入力してください。
                     </p>
                 </div>
             </div>
@@ -834,10 +834,10 @@ function createRequestSet() {
                 // ボタンのテキストを変更するロジック
                 if (targetBlock.classList.contains('hidden')) {
                     // 隠れた → テキストを「一覧 ＋」に戻す
-                    this.innerHTML = '一覧 <i class="fas fa-plus"></i>';
+                    this.innerHTML = 'CLOSE <i class="fas fa-plus-circle"></i>';
                 } else {
                     // 表示された → テキストを「一覧 −」にする
-                    this.innerHTML = '一覧 <i class="fas fa-minus"></i>';
+                    this.innerHTML = 'CLOSE <i class="fas fa-minus-circle"></i>';
                 }
             }
         });

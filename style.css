@@ -121,7 +121,7 @@ h1 {
 }
 
 .request-set {
-  margin: 0;
+  margin: 0 0 30px;
   padding: 10px;
   border: 1px solid #999;
   border-radius: 8px;
@@ -485,7 +485,7 @@ button:disabled {
 }
 .grid-header {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
   background: #f8f9fa;
   font-weight: 400;
 }
