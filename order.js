@@ -217,7 +217,7 @@ function createRequestSet() {
         // 2回目以降で前回の値がある場合
         const displayText = previousMemberCustom || previousMember;
         memberSelectHTML = `
-            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}" size="10">
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
                 <option value="">選択</option>
                 <option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>
                 ${memberOptions}
@@ -227,7 +227,7 @@ function createRequestSet() {
     } else {
         // 初回
         memberSelectHTML = `
-            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}" size="10">
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
                 <option value="">選択</option>
                 ${memberOptions}
                 <option value="未登録者">未登録者</option>

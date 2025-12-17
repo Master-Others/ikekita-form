@@ -163,8 +163,9 @@ h1 {
     height: 60px;
     font-size: 14px;
     line-height: 1.2;
-    top: 0px;
-    right: 0px;
+    top: 70px;
+    right: calc((100% - 780px) / 2);
+    padding: 10px;
   }
 }
 
@@ -172,7 +173,8 @@ h1 {
   background-color: #cc0000;
 }
 .delete-request-btn i {
-  margin-right: 5px;
+  margin-bottom: 5px;
+  display: block;
 }
 
 
@@ -182,6 +184,7 @@ h1 {
   margin-bottom: 20px;
   font-size: 18px;
 }
+
 
 
 .request-set .main-block {
@@ -234,7 +237,10 @@ h1 {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  max-height: 200px;
+  overflow-y: auto;
 }
+
 .request-set .select-wrapper:invalid {
   color: #ccc;
 }
