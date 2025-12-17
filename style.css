@@ -371,9 +371,10 @@ button:disabled {
   display: none;
 }
 #result.success {
-  background: #1794dd;
+  background: #000000;
   color: #ffffff;
   display: block;
+  max-width: 100%;
 }
 #result.error {
   max-width: 330px;

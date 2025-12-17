@@ -373,7 +373,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -394,7 +394,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -415,7 +415,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -441,7 +441,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -462,7 +462,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -483,7 +483,7 @@ function createRequestSet() {
                         <div class="accordion-content">
                             <div class="rows-container"></div>
                             <div class="details-area">
-                                <label class="main-label mark">内訳</label>
+                                <label class="main-label mark">内容</label>
                                 <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
                             </div>
                         </div>
@@ -996,7 +996,7 @@ function setupEventHandlers() {
                     const categoryValue = checkbox.value;
                     let detailsValue = '';
 
-                    // 対応するtextareaから内訳を取得
+                    // 対応するtextareaから内容を取得
                     if (categoryValue === '新規作成') {
                         detailsValue = formData.get(`details_new_${i}`) || '';
                     } else if (categoryValue === '修正') {
