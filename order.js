@@ -217,7 +217,7 @@ function createRequestSet() {
         // 2回目以降で前回の値がある場合
         const displayText = previousMemberCustom || previousMember;
         memberSelectHTML = `
-            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}" size="10">
                 <option value="">選択</option>
                 <option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>
                 ${memberOptions}
@@ -227,7 +227,7 @@ function createRequestSet() {
     } else {
         // 初回
         memberSelectHTML = `
-            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
+            <select class="member-select" name="member_${requestCount}" data-index="${requestCount}" size="10">
                 <option value="">選択</option>
                 ${memberOptions}
                 <option value="未登録者">未登録者</option>
@@ -308,8 +308,8 @@ function createRequestSet() {
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <p>
-                    <strong>【映像・画像制作の入力方法】</strong><br>
-                    パターン数（何種類の映像・画像を制作するか）を入力（最大9まで）、<br>
+                    <strong>【作業区分の入力方法】</strong><br>
+                    何の画像を制作するか）を入力（最大9まで）、<br>
                     SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
                     各説明欄に動画の長さや画像の用途を入力し、必要な枚数・本数を入力してください。
                     </p>
@@ -426,14 +426,14 @@ function createRequestSet() {
             <!-- グループ2: グラビア、組織図 で共通 -->
             <div class="category-box category-box-group2" data-business="グラビア,組織図" style="display: none;">
                 <div class="category-label-wrapper">
-                    <div class="accordion-item" id="item-1_${requestCount}">
+                    <div class="accordion-item" id="item-1_${requestCount}" data-group="group2">
                         <div class="accordion-header">
                             <label class="category-label">
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成">
                                 <span class="item-title">新規作成</span>
                             </label>
                             <div class="input-group">
-                                <span class="label-text">人数</span>
+                                <span class="label-text">制作数</span>
                                 <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
                                 <button type="button" class="set-btn">SET</button>
                             </div>
@@ -447,14 +447,14 @@ function createRequestSet() {
                         </div>
                     </div>
 
-                    <div class="accordion-item" id="item-2_${requestCount}">
+                    <div class="accordion-item" id="item-2_${requestCount}" data-group="group2">
                         <div class="accordion-header">
                             <label class="category-label">
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
                                 <span class="item-title">修正</span>
                             </label>
                             <div class="input-group">
-                                <span class="label-text">人数</span>
+                                <span class="label-text">制作数</span>
                                 <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
                                 <button type="button" class="set-btn">SET</button>
                             </div>
@@ -468,14 +468,14 @@ function createRequestSet() {
                         </div>
                     </div>
 
-                    <div class="accordion-item" id="item-3_${requestCount}">
+                    <div class="accordion-item" id="item-3_${requestCount}" data-group="group2">
                         <div class="accordion-header">
                             <label class="category-label">
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="その他">
                                 <span class="item-title">その他</span>
                             </label>
                             <div class="input-group">
-                                <span class="label-text">人数</span>
+                                <span class="label-text">制作数</span>
                                 <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
                                 <button type="button" class="set-btn">SET</button>
                             </div>
