@@ -121,6 +121,7 @@ h1 {
 }
 
 .request-set {
+  position: relative;
   margin: 0 0 30px;
   padding: 10px;
   border: 1px solid #999;
@@ -132,8 +133,6 @@ h1 {
     padding: 15px;
   }
 }
-
-
 
 .request-set-header {
   display: flex;
@@ -156,6 +155,7 @@ h1 {
   border-radius: 50%;
   top: -16px;
   right: -18px;
+  z-index: 10;
 }
 @media (min-width: 768px) {
   .delete-request-btn {
@@ -176,17 +176,11 @@ h1 {
   margin-bottom: 5px;
   display: block;
 }
-
-
-
 .request-set .title2 {
   color: #333;
   margin-bottom: 20px;
   font-size: 18px;
 }
-
-
-
 .request-set .main-block {
   margin-bottom: 24px;
 }
@@ -630,6 +624,7 @@ button:disabled {
   flex-wrap: wrap;
 }
 .generated-row .pattern-text-input {
+  flex: 1;
   width: calc(100% - 100px);
   padding: 1px 3px 0;
   border: 1px solid #999;
@@ -665,4 +660,106 @@ textarea.sync-target {
   border-radius: 4px;
   resize: vertical;
   background-color: #fff;
+}
+
+.details-area,.note-area {
+  margin-top: 10px;
+}
+
+.details-label-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.paste-checkbox {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* ZIPアップロードエリアのスタイル */
+.zip-upload-area {
+  margin-top: 10px;
+}
+.zip-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.zip-dropzone.dragover {
+  border-color: #4CAF50;
+  background-color: #e8f5e9;
+}
+.zip-dropzone i {
+  font-size: 48px;
+  color: #999;
+  margin-bottom: 15px;
+}
+.zip-dropzone p {
+  margin: 10px 0;
+  color: #666;
+}
+.file-select-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 10px 0;
+  transition: background-color 0.3s;
+}
+.file-select-btn:hover {
+  background-color: #45a049;
+}
+.file-info {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
+.zip-file-list {
+  margin-top: 15px;
+}
+.zip-file-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.zip-file-item i {
+  font-size: 24px;
+  color: #666;
+  margin-right: 10px;
+}
+.zip-file-item .file-name {
+  flex: 1;
+  font-weight: bold;
+  color: #333;
+}
+.zip-file-item .file-size {
+  color: #999;
+  font-size: 12px;
+  margin-right: 10px;
+}
+.remove-file-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.remove-file-btn:hover {
+  background-color: #cc0000;
+}
+.remove-file-btn i {
+  font-size: 14px;
 }

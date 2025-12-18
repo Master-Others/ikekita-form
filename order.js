@@ -235,19 +235,22 @@ function createRequestSet() {
         memberCustomHTML = `<input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力">`;
     }
 
-
-
+    // 削除ボタンのHTML生成（2つ目以降のみ表示）
+    const deleteButtonHTML = requestCount > 1 ? `
+        <button type="button" class="delete-request-btn" data-request-id="${requestCount}">
+            <i class="fas fa-times"></i> 削除
+        </button>
+    ` : '';
 
     const div = document.createElement("div");
     div.className = "request-set";
+    div.setAttribute('data-request-id', requestCount);
 
     // HTML生成
     div.innerHTML = `
         <div class="request-set-header">
             <h3 class="title2">フォームを入力してください</h3>
-            <button type="button" class="delete-request-btn" data-request-id="${requestCount}">
-                <i class="fas fa-times"></i> 削除
-            </button>
+            ${deleteButtonHTML}
         </div>
 
         <label class="main-label mark">店舗選択</label>
@@ -371,11 +374,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
 
@@ -392,11 +391,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
 
@@ -413,11 +408,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
                 </div>
@@ -439,11 +430,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_new_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
 
@@ -460,11 +447,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_modify_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
 
@@ -481,11 +464,7 @@ function createRequestSet() {
                             </div>
                         </div>
                         <div class="accordion-content">
-                            <div class="rows-container"></div>
-                            <div class="details-area">
-                                <label class="main-label mark">内容</label>
-                                <textarea class="sync-target" name="details_other_${requestCount}"></textarea>
-                            </div>
+                            <div class="pattern-rows-container"></div>
                         </div>
                     </div>
                 </div>
@@ -511,20 +490,20 @@ function createRequestSet() {
                     </div>
                     <div class="grid-row">
                         <div class="grid-cell grid-label">普通紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A3" data-textarea="note_${requestCount}"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A4" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A3"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A4"></label></div>
                     </div>
                     <div class="grid-row">
                         <div class="grid-cell grid-label">写真紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
                     </div>
                     <div class="grid-row">
                         <div class="grid-cell grid-label">内照紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A1" data-textarea="note_${requestCount}"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A2" data-textarea="note_${requestCount}"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
+                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
                     </div>
                 </div>
             </div>
@@ -536,44 +515,55 @@ function createRequestSet() {
         </div>
 
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
-
             <div class="checkbox-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1920x1080" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="1920x1080" class="size-checkbox">
                     <span>1920x1080</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox">
                     <span>640x640</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="976x211" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="976x211" class="size-checkbox">
                     <span>976x211</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="750x470" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="750x470" class="size-checkbox">
                     <span>750x470</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="700x300" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="700x300" class="size-checkbox">
                     <span>700x300</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="580x250" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="580x250" class="size-checkbox">
                     <span>580x250</span>
                 </label>
                 <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1500x500" class="size-checkbox" data-textarea="note_${requestCount}">
+                    <input type="checkbox" name="size_banner_${requestCount}" value="1500x500" class="size-checkbox">
                     <span>1500x500</span>
                 </label>
             </div>
         </div>
 
-        <label class="main-label">備考</label>
-        <textarea class="note-box" name="note_${requestCount}"></textarea>
+        <label class="main-label">ZIP</label>
+        <div class="zip-upload-area" id="zipUploadArea_${requestCount}">
+            <div class="zip-dropzone" id="zipDropzone_${requestCount}">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>ZIPファイルをドラッグ＆ドロップ<br>または</p>
+                <button type="button" class="file-select-btn" id="fileSelectBtn_${requestCount}">ファイルを選択</button>
+                <input type="file" id="zipFileInput_${requestCount}" accept=".zip" style="display: none;">
+                <p class="file-info">ファイル形式: ZIP / 最大容量: 500MB</p>
+            </div>
+            <div class="zip-file-list" id="zipFileList_${requestCount}"></div>
+        </div>
     `;
 
     document.getElementById("requestContainer").appendChild(div);
+
+    // ZIPファイルアップロード機能の初期化
+    setupZipUpload(requestCount);
 
     // 業務区分の変更イベント
     const businessSelect = div.querySelector(`select[name="business_${requestCount}"]`);
@@ -721,8 +711,7 @@ function createRequestSet() {
         const setBtn = item.querySelector('.set-btn');
         const patternCountInput = item.querySelector('.pattern-count-input');
         const contentArea = item.querySelector('.accordion-content');
-        const rowsContainer = item.querySelector('.rows-container');
-        const syncTextarea = item.querySelector('.sync-target');
+        const patternRowsContainer = item.querySelector('.pattern-rows-container');
 
         // SETボタンクリック時の処理
         setBtn.addEventListener('click', () => {
@@ -737,10 +726,18 @@ function createRequestSet() {
             }
 
             // 既存の行をクリアして再生成
-            rowsContainer.innerHTML = '';
+            patternRowsContainer.innerHTML = '';
+
+            // 作業区分の値を取得
+            const categoryValue = item.querySelector('.enable-check').value;
 
             for (let i = 1; i <= count; i++) {
-                // 行を作成
+                // パターンごとのブロックを作成
+                const patternBlock = document.createElement('div');
+                patternBlock.className = 'pattern-block';
+                patternBlock.setAttribute('data-pattern-index', i);
+
+                // パターン名入力とサイズ数入力の行
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'generated-row';
 
@@ -748,6 +745,7 @@ function createRequestSet() {
                 const patternInput = document.createElement('input');
                 patternInput.type = 'text';
                 patternInput.className = 'pattern-text-input';
+                patternInput.name = `pattern_text_${requestCount}_${categoryValue}_${i}`;
                 patternInput.placeholder = `パターン${i}`;
 
                 // 「サイズ数」ラベル
@@ -759,27 +757,76 @@ function createRequestSet() {
                 const sizeInput = document.createElement('input');
                 sizeInput.type = 'number';
                 sizeInput.className = 'num-input size-count-input';
+                sizeInput.name = `size_count_${requestCount}_${categoryValue}_${i}`;
                 sizeInput.min = '0';
                 sizeInput.max = '20';
                 sizeInput.placeholder = '0';
-
-                // イベントリスナー追加(入力時に同期処理を走らせる)
-                patternInput.addEventListener('input', updateDetails);
-                sizeInput.addEventListener('input', updateDetails);
 
                 // 要素を追加
                 rowDiv.appendChild(patternInput);
                 rowDiv.appendChild(sizeLabel);
                 rowDiv.appendChild(sizeInput);
 
-                rowsContainer.appendChild(rowDiv);
+                patternBlock.appendChild(rowDiv);
+
+                // 内容のtextarea
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'details-area';
+
+                const detailsLabelDiv = document.createElement('div');
+                detailsLabelDiv.className = 'details-label-wrapper';
+
+                const detailsLabel = document.createElement('label');
+                detailsLabel.className = 'main-label mark';
+                detailsLabel.textContent = `内容${i}`;
+
+                // 貼り付けチェックボックス
+                const pasteCheckbox = document.createElement('input');
+                pasteCheckbox.type = 'checkbox';
+                pasteCheckbox.className = 'paste-checkbox';
+                pasteCheckbox.id = `pasteCheck_${requestCount}_${categoryValue}_${i}`;
+
+                const pasteLabel = document.createElement('label');
+                pasteLabel.htmlFor = `pasteCheck_${requestCount}_${categoryValue}_${i}`;
+                pasteLabel.textContent = '貼り付け';
+                pasteLabel.style.marginLeft = '10px';
+                pasteLabel.style.fontSize = '14px';
+
+                detailsLabelDiv.appendChild(detailsLabel);
+                detailsLabelDiv.appendChild(pasteCheckbox);
+                detailsLabelDiv.appendChild(pasteLabel);
+
+                const detailsTextarea = document.createElement('textarea');
+                detailsTextarea.className = 'sync-target';
+                detailsTextarea.name = `details_${requestCount}_${categoryValue}_${i}`;
+
+                detailsDiv.appendChild(detailsLabelDiv);
+                detailsDiv.appendChild(detailsTextarea);
+
+                patternBlock.appendChild(detailsDiv);
+
+                // 備考のtextarea
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note-area';
+
+                const noteLabel = document.createElement('label');
+                noteLabel.className = 'main-label';
+                noteLabel.textContent = `備考${i}`;
+
+                const noteTextarea = document.createElement('textarea');
+                noteTextarea.className = 'note-box';
+                noteTextarea.name = `note_${requestCount}_${categoryValue}_${i}`;
+
+                noteDiv.appendChild(noteLabel);
+                noteDiv.appendChild(noteTextarea);
+
+                patternBlock.appendChild(noteDiv);
+
+                patternRowsContainer.appendChild(patternBlock);
             }
 
             // エリアを表示する
             contentArea.classList.add('active');
-
-            // 初回の同期実行
-            updateDetails();
         });
 
         // 入力制限(数字2桁、最大20)
@@ -793,35 +840,10 @@ function createRequestSet() {
                 }
             }
         });
-
-        // 同期処理関数
-        function updateDetails() {
-            const rows = rowsContainer.querySelectorAll('.generated-row');
-            let resultString = '';
-
-            rows.forEach((row, index) => {
-                const pInput = row.querySelector('.pattern-text-input');
-                const sInput = row.querySelector('.size-count-input');
-
-                // パターン名:入力があればそれ、なければplaceholderの値を使う
-                const pName = pInput.value.trim() !== '' ? pInput.value : pInput.placeholder;
-
-                // サイズ数:入力があればそれ、なければ空(または0)
-                const sCount = sInput.value;
-
-                // サイズ数が入力されている場合のみ文字列に追加
-                if (sCount) {
-                    resultString += `${pName}:${sCount}サイズ、`;
-                }
-            });
-
-            syncTextarea.value = resultString;
-        }
     });
 
-
     // サイズボタンのトグル処理
-    const sizeButtons = document.querySelectorAll('.size-toggle-btn');
+    const sizeButtons = div.querySelectorAll('.size-toggle-btn');
 
     sizeButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -847,21 +869,43 @@ function createRequestSet() {
     const sizeCheckboxes = div.querySelectorAll('.size-checkbox');
     sizeCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            const textareaName = this.dataset.textarea;
-            const textarea = document.querySelector(`textarea[name="${textareaName}"]`);
-            const value = this.value;
+            // チェックされた貼り付け先を探す
+            const pasteCheckboxes = div.querySelectorAll('.paste-checkbox:checked');
+            
+            if (pasteCheckboxes.length === 0) {
+                alert('貼り付け先のチェックボックスを選択してください');
+                this.checked = false;
+                return;
+            }
 
-            if (this.checked) {
-                // チェックされたら追加
-                const currentValue = textarea.value;
-                if (currentValue) {
-                    textarea.value = currentValue + value + ',';
+            // 優先順位順にソート（内容1が最優先）
+            const sortedCheckboxes = Array.from(pasteCheckboxes).sort((a, b) => {
+                const aMatch = a.id.match(/_(\d+)$/);
+                const bMatch = b.id.match(/_(\d+)$/);
+                const aIndex = aMatch ? parseInt(aMatch[1]) : 999;
+                const bIndex = bMatch ? parseInt(bMatch[1]) : 999;
+                return aIndex - bIndex;
+            });
+
+            // 最優先のtextareaに貼り付け
+            const targetCheckbox = sortedCheckboxes[0];
+            const targetId = targetCheckbox.id.replace('pasteCheck_', 'details_');
+            const textarea = div.querySelector(`textarea[name="${targetId}"]`);
+
+            if (textarea) {
+                const value = this.value;
+                if (this.checked) {
+                    // チェックされたら追加
+                    const currentValue = textarea.value;
+                    if (currentValue) {
+                        textarea.value = currentValue + value + ',';
+                    } else {
+                        textarea.value = value + ',';
+                    }
                 } else {
-                    textarea.value = value + ',';
+                    // チェック外されたら削除
+                    textarea.value = textarea.value.replace(value + ',', '');
                 }
-            } else {
-                // チェック外されたら削除
-                textarea.value = textarea.value.replace(value + ',', '');
             }
         });
     });
@@ -870,29 +914,52 @@ function createRequestSet() {
     const printCheckboxes = div.querySelectorAll('.print-size-checkbox');
     printCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            const textareaName = this.dataset.textarea;
-            const textarea = document.querySelector(`textarea[name="${textareaName}"]`);
-            const type = this.dataset.type;
-            const size = this.dataset.size;
-
-            // 同じタイプの全チェックボックスを取得
-            const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"][data-textarea="${textareaName}"]`);
-            const checkedSizes = Array.from(sameTypeCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.dataset.size);
-
-            // 現在のtextarea値を解析して、このタイプのエントリを更新
-            let lines = textarea.value.split(',').filter(l => l.trim());
-
-            // このタイプの既存エントリを削除
-            lines = lines.filter(line => !line.includes(type));
-
-            // チェックされたサイズがあれば新しいエントリを追加
-            if (checkedSizes.length > 0) {
-                lines.push(`${type}${checkedSizes.join(',')}`);
+            // チェックされた貼り付け先を探す
+            const pasteCheckboxes = div.querySelectorAll('.paste-checkbox:checked');
+            
+            if (pasteCheckboxes.length === 0) {
+                alert('貼り付け先のチェックボックスを選択してください');
+                this.checked = false;
+                return;
             }
 
-            textarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
+            // 優先順位順にソート（内容1が最優先）
+            const sortedCheckboxes = Array.from(pasteCheckboxes).sort((a, b) => {
+                const aMatch = a.id.match(/_(\d+)$/);
+                const bMatch = b.id.match(/_(\d+)$/);
+                const aIndex = aMatch ? parseInt(aMatch[1]) : 999;
+                const bIndex = bMatch ? parseInt(bMatch[1]) : 999;
+                return aIndex - bIndex;
+            });
+
+            // 最優先のtextareaに貼り付け
+            const targetCheckbox = sortedCheckboxes[0];
+            const targetId = targetCheckbox.id.replace('pasteCheck_', 'details_');
+            const textarea = div.querySelector(`textarea[name="${targetId}"]`);
+
+            if (textarea) {
+                const type = this.dataset.type;
+                const size = this.dataset.size;
+
+                // 同じタイプの全チェックボックスを取得
+                const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"]`);
+                const checkedSizes = Array.from(sameTypeCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.dataset.size);
+
+                // 現在のtextarea値を解析して、このタイプのエントリを更新
+                let lines = textarea.value.split(',').filter(l => l.trim());
+
+                // このタイプの既存エントリを削除
+                lines = lines.filter(line => !line.includes(type));
+
+                // チェックされたサイズがあれば新しいエントリを追加
+                if (checkedSizes.length > 0) {
+                    lines.push(`${type}${checkedSizes.join(',')}`);
+                }
+
+                textarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
+            }
         });
     });
 
@@ -900,16 +967,105 @@ function createRequestSet() {
     const deleteBtn = div.querySelector('.delete-request-btn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', function() {
-            if (requestCount <= 1) {
+            const remainingSets = document.querySelectorAll('.request-set').length;
+            if (remainingSets <= 1) {
                 alert('最低1つのフォームは必要です。');
                 return;
             }
             if (confirm('このフォームを削除しますか?')) {
                 div.remove();
-                // requestCountは減らさない(IDの一意性を保つため)
             }
         });
     }
+}
+
+// ZIPファイルアップロード機能のセットアップ
+function setupZipUpload(requestId) {
+    const dropzone = document.getElementById(`zipDropzone_${requestId}`);
+    const fileInput = document.getElementById(`zipFileInput_${requestId}`);
+    const fileSelectBtn = document.getElementById(`fileSelectBtn_${requestId}`);
+    const fileList = document.getElementById(`zipFileList_${requestId}`);
+
+    // ファイル選択ボタンのクリックイベント
+    fileSelectBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // ファイル選択時の処理
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files, requestId);
+    });
+
+    // ドラッグオーバー時の処理
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    // ドラッグリーブ時の処理
+    dropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+    });
+
+    // ドロップ時の処理
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files, requestId);
+    });
+}
+
+// ファイル処理関数
+function handleFiles(files, requestId) {
+    const fileList = document.getElementById(`zipFileList_${requestId}`);
+    const maxSize = 500 * 1024 * 1024; // 500MB
+
+    Array.from(files).forEach(file => {
+        // ZIPファイルかチェック
+        if (!file.name.toLowerCase().endsWith('.zip')) {
+            alert(`${file.name} はZIPファイルではありません。`);
+            return;
+        }
+
+        // ファイルサイズチェック
+        if (file.size > maxSize) {
+            alert(`${file.name} のサイズが500MBを超えています。`);
+            return;
+        }
+
+        // ファイル情報を表示
+        const fileItem = document.createElement('div');
+        fileItem.className = 'zip-file-item';
+        fileItem.innerHTML = `
+            <i class="fas fa-file-archive"></i>
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+            <button type="button" class="remove-file-btn" data-file-name="${file.name}">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        fileList.appendChild(fileItem);
+
+        // ファイルをBase64に変換して保存
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Data = e.target.result.split(',')[1];
+            
+            // ファイルデータを保存（フォーム送信時に使用）
+            fileItem.setAttribute('data-file-base64', base64Data);
+            fileItem.setAttribute('data-file-name', file.name);
+            fileItem.setAttribute('data-file-size', file.size);
+        };
+        reader.readAsDataURL(file);
+
+        // 削除ボタンのイベント
+        const removeBtn = fileItem.querySelector('.remove-file-btn');
+        removeBtn.addEventListener('click', () => {
+            fileItem.remove();
+        });
+    });
 }
 
 // イベントハンドラの設定を関数化(初期化後に呼ぶため)
@@ -920,10 +1076,13 @@ function setupEventHandlers() {
         e.preventDefault();
 
         // カスタムバリデーション: 依頼メンバーのチェック
+        const requestSets = document.querySelectorAll('.request-set');
         let validationError = false;
-        for (let i = 1; i <= requestCount; i++) {
-            const memberSelect = document.querySelector(`select[name="member_${i}"]`);
-            const memberCustomInput = document.querySelector(`input[name="member_custom_${i}"]`);
+
+        for (const requestSet of requestSets) {
+            const requestId = requestSet.getAttribute('data-request-id');
+            const memberSelect = requestSet.querySelector(`select[name="member_${requestId}"]`);
+            const memberCustomInput = requestSet.querySelector(`input[name="member_custom_${requestId}"]`);
 
             if (memberSelect && memberCustomInput) {
                 const selectValue = memberSelect.value;
@@ -959,28 +1118,59 @@ function setupEventHandlers() {
         submitBtn.textContent = '・・・送信中・・・';
         resultDiv.style.display = 'none';
 
-        const formData = new FormData(this);
         const requests = [];
+        const zipFiles = [];
 
-        for (let i = 1; i <= requestCount; i++) {
-            // チェックボックスの値収集
-            const checkedCategories = document.querySelectorAll(`input[name="work_category_${i}"]:checked`);
+        // 各request-setを処理
+        for (const requestSet of requestSets) {
+            const requestId = requestSet.getAttribute('data-request-id');
 
             // メンバー名の決定
-            let memberName = formData.get(`member_${i}`);
-            const memberCustom = formData.get(`member_custom_${i}`);
+            const memberSelect = requestSet.querySelector(`select[name="member_${requestId}"]`);
+            const memberCustomInput = requestSet.querySelector(`input[name="member_custom_${requestId}"]`);
+            let memberName = memberSelect ? memberSelect.value : '';
+            const memberCustom = memberCustomInput ? memberCustomInput.value : '';
             if (memberCustom && memberCustom.trim() !== '') {
                 memberName = memberCustom;
             }
+
+            // 店舗名の取得
+            const placeInput = requestSet.querySelector(`input[name="place_${requestId}"]`);
+            const placeSelect = requestSet.querySelector(`select[name="place_${requestId}"]`);
+            const place = placeInput ? placeInput.value : (placeSelect ? placeSelect.value : '');
+
+            // 業務区分の取得
+            const businessSelect = requestSet.querySelector(`select[name="business_${requestId}"]`);
+            const business = businessSelect ? businessSelect.value : '';
+
+            // チェックされた作業区分を取得
+            const checkedCategories = requestSet.querySelectorAll(`input[name="work_category_${requestId}"]:checked`);
+
+            // ZIPファイルの取得
+            const zipFileItems = requestSet.querySelectorAll('.zip-file-item');
+            zipFileItems.forEach(item => {
+                const base64Data = item.getAttribute('data-file-base64');
+                const fileName = item.getAttribute('data-file-name');
+                const fileSize = item.getAttribute('data-file-size');
+                
+                if (base64Data) {
+                    zipFiles.push({
+                        requestId: requestId,
+                        place: place,
+                        fileName: fileName,
+                        fileSize: fileSize,
+                        base64Data: base64Data
+                    });
+                }
+            });
 
             // 共通データ
             const commonData = {
                 member: memberName,
                 member_custom: memberCustom,
                 group: CONFIG.GROUP_NAME_FROM_SHEET,
-                place: formData.get(`place_${i}`),
-                business: formData.get(`business_${i}`),
-                note: formData.get(`note_${i}`)
+                place: place,
+                business: business
             };
 
             // 作業区分が選択されていない場合は1行だけ作成
@@ -988,28 +1178,54 @@ function setupEventHandlers() {
                 requests.push({
                     ...commonData,
                     category: '',
-                    details: ''
+                    details: '',
+                    pattern: '',
+                    sizeCount: '',
+                    note: ''
                 });
             } else {
-                // 各作業区分ごとに行を作成
+                // 各作業区分ごとにパターンを処理
                 checkedCategories.forEach(checkbox => {
                     const categoryValue = checkbox.value;
-                    let detailsValue = '';
 
-                    // 対応するtextareaから内容を取得
-                    if (categoryValue === '新規作成') {
-                        detailsValue = formData.get(`details_new_${i}`) || '';
-                    } else if (categoryValue === '修正') {
-                        detailsValue = formData.get(`details_modify_${i}`) || '';
-                    } else if (categoryValue === 'その他') {
-                        detailsValue = formData.get(`details_other_${i}`) || '';
+                    // パターンブロックを取得
+                    const patternBlocks = requestSet.querySelectorAll(`.pattern-block`);
+
+                    if (patternBlocks.length === 0) {
+                        // パターンが設定されていない場合は1行だけ作成
+                        requests.push({
+                            ...commonData,
+                            category: categoryValue,
+                            details: '',
+                            pattern: '',
+                            sizeCount: '',
+                            note: ''
+                        });
+                    } else {
+                        // 各パターンごとに行を作成
+                        patternBlocks.forEach((block, index) => {
+                            const patternIndex = index + 1;
+
+                            const patternTextInput = block.querySelector(`input[name="pattern_text_${requestId}_${categoryValue}_${patternIndex}"]`);
+                            const sizeCountInput = block.querySelector(`input[name="size_count_${requestId}_${categoryValue}_${patternIndex}"]`);
+                            const detailsTextarea = block.querySelector(`textarea[name="details_${requestId}_${categoryValue}_${patternIndex}"]`);
+                            const noteTextarea = block.querySelector(`textarea[name="note_${requestId}_${categoryValue}_${patternIndex}"]`);
+
+                            const patternText = patternTextInput ? (patternTextInput.value || patternTextInput.placeholder) : '';
+                            const sizeCount = sizeCountInput ? sizeCountInput.value : '';
+                            const details = detailsTextarea ? detailsTextarea.value : '';
+                            const note = noteTextarea ? noteTextarea.value : '';
+
+                            requests.push({
+                                ...commonData,
+                                category: categoryValue,
+                                pattern: patternText,
+                                sizeCount: sizeCount,
+                                details: details,
+                                note: note
+                            });
+                        });
                     }
-
-                    requests.push({
-                        ...commonData,
-                        category: categoryValue,
-                        details: detailsValue
-                    });
                 });
             }
         }
@@ -1024,6 +1240,7 @@ function setupEventHandlers() {
                 },
                 body: JSON.stringify({
                     requests: requests,
+                    zipFiles: zipFiles,
                     auth_password: CONFIG.AUTH_PASSWORD
                 })
             });
