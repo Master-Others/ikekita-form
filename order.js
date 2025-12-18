@@ -515,35 +515,15 @@ function createRequestSet() {
         </div>
 
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
-            <div class="checkbox-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1920x1080" class="size-checkbox">
-                    <span>1920x1080</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="640x640" class="size-checkbox">
-                    <span>640x640</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="976x211" class="size-checkbox">
-                    <span>976x211</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="750x470" class="size-checkbox">
-                    <span>750x470</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="700x300" class="size-checkbox">
-                    <span>700x300</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="580x250" class="size-checkbox">
-                    <span>580x250</span>
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" name="size_banner_${requestCount}" value="1500x500" class="size-checkbox">
-                    <span>1500x500</span>
-                </label>
+            <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
+            <div class="button-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <button type="button" class="size-insert-btn" data-size="1920x1080">1920x1080</button>
+                <button type="button" class="size-insert-btn" data-size="640x640">640x640</button>
+                <button type="button" class="size-insert-btn" data-size="976x211">976x211</button>
+                <button type="button" class="size-insert-btn" data-size="750x470">750x470</button>
+                <button type="button" class="size-insert-btn" data-size="700x300">700x300</button>
+                <button type="button" class="size-insert-btn" data-size="580x250">580x250</button>
+                <button type="button" class="size-insert-btn" data-size="1500x500">1500x500</button>
             </div>
         </div>
 
@@ -554,7 +534,7 @@ function createRequestSet() {
                 <p>ZIPファイルをドラッグ＆ドロップ<br>または</p>
                 <button type="button" class="file-select-btn" id="fileSelectBtn_${requestCount}">ファイルを選択</button>
                 <input type="file" id="zipFileInput_${requestCount}" accept=".zip" style="display: none;">
-                <p class="file-info">ファイル形式: ZIP / 最大容量: 500MB</p>
+                <p class="file-info">ファイル形式: ZIP / 最大容量: 100MB</p>
             </div>
             <div class="zip-file-list" id="zipFileList_${requestCount}"></div>
         </div>
@@ -780,21 +760,7 @@ function createRequestSet() {
                 detailsLabel.className = 'main-label mark';
                 detailsLabel.textContent = `内容${i}`;
 
-                // 貼り付けチェックボックス
-                const pasteCheckbox = document.createElement('input');
-                pasteCheckbox.type = 'checkbox';
-                pasteCheckbox.className = 'paste-checkbox';
-                pasteCheckbox.id = `pasteCheck_${requestCount}_${categoryValue}_${i}`;
-
-                const pasteLabel = document.createElement('label');
-                pasteLabel.htmlFor = `pasteCheck_${requestCount}_${categoryValue}_${i}`;
-                pasteLabel.textContent = '貼り付け';
-                pasteLabel.style.marginLeft = '10px';
-                pasteLabel.style.fontSize = '14px';
-
                 detailsLabelDiv.appendChild(detailsLabel);
-                detailsLabelDiv.appendChild(pasteCheckbox);
-                detailsLabelDiv.appendChild(pasteLabel);
 
                 const detailsTextarea = document.createElement('textarea');
                 detailsTextarea.className = 'sync-target';
@@ -823,6 +789,21 @@ function createRequestSet() {
                 patternBlock.appendChild(noteDiv);
 
                 patternRowsContainer.appendChild(patternBlock);
+
+                // 同期処理のイベントリスナーを追加
+                const updateDetails = () => {
+                    const pName = patternInput.value.trim() !== '' ? patternInput.value : patternInput.placeholder;
+                    const sCount = sizeInput.value;
+
+                    if (sCount) {
+                        detailsTextarea.value = `${pName}:${sCount}サイズ`;
+                    } else {
+                        detailsTextarea.value = '';
+                    }
+                };
+
+                patternInput.addEventListener('input', updateDetails);
+                sizeInput.addEventListener('input', updateDetails);
             }
 
             // エリアを表示する
@@ -865,48 +846,39 @@ function createRequestSet() {
         });
     });
 
-    // バナーサイズチェックボックスのイベント
-    const sizeCheckboxes = div.querySelectorAll('.size-checkbox');
-    sizeCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            // チェックされた貼り付け先を探す
-            const pasteCheckboxes = div.querySelectorAll('.paste-checkbox:checked');
+    // 最後にフォーカスされた内容textareaを追跡
+    let lastFocusedDetailsTextarea = null;
+
+    // すべての内容textareaにフォーカスイベントを設定
+    div.addEventListener('focusin', (e) => {
+        if (e.target.classList.contains('sync-target')) {
+            lastFocusedDetailsTextarea = e.target;
+        }
+    });
+
+    // バナーサイズ挿入ボタンのイベント
+    const sizeInsertButtons = div.querySelectorAll('.size-insert-btn');
+    sizeInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sizeValue = this.dataset.size;
             
-            if (pasteCheckboxes.length === 0) {
-                alert('貼り付け先のチェックボックスを選択してください');
-                this.checked = false;
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
                 return;
             }
 
-            // 優先順位順にソート（内容1が最優先）
-            const sortedCheckboxes = Array.from(pasteCheckboxes).sort((a, b) => {
-                const aMatch = a.id.match(/_(\d+)$/);
-                const bMatch = b.id.match(/_(\d+)$/);
-                const aIndex = aMatch ? parseInt(aMatch[1]) : 999;
-                const bIndex = bMatch ? parseInt(bMatch[1]) : 999;
-                return aIndex - bIndex;
-            });
-
-            // 最優先のtextareaに貼り付け
-            const targetCheckbox = sortedCheckboxes[0];
-            const targetId = targetCheckbox.id.replace('pasteCheck_', 'details_');
-            const textarea = div.querySelector(`textarea[name="${targetId}"]`);
-
-            if (textarea) {
-                const value = this.value;
-                if (this.checked) {
-                    // チェックされたら追加
-                    const currentValue = textarea.value;
-                    if (currentValue) {
-                        textarea.value = currentValue + value + ',';
-                    } else {
-                        textarea.value = value + ',';
-                    }
-                } else {
-                    // チェック外されたら削除
-                    textarea.value = textarea.value.replace(value + ',', '');
-                }
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = sizeValue + ',';
             }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
         });
     });
 
@@ -916,7 +888,7 @@ function createRequestSet() {
         checkbox.addEventListener('change', function() {
             // チェックされた貼り付け先を探す
             const pasteCheckboxes = div.querySelectorAll('.paste-checkbox:checked');
-            
+
             if (pasteCheckboxes.length === 0) {
                 alert('貼り付け先のチェックボックスを選択してください');
                 this.checked = false;
@@ -1231,18 +1203,24 @@ function setupEventHandlers() {
         }
 
         try {
+            // データサイズを確認
+            const jsonData = JSON.stringify({
+                requests: requests,
+                zipFiles: zipFiles,
+                auth_password: CONFIG.AUTH_PASSWORD
+            });
+
+            // データサイズのログ出力（デバッグ用）
+            console.log('送信データサイズ:', (jsonData.length / 102400 / 102400).toFixed(2), 'MB');
+
             // GASへ送信
             const response = await fetch(ENDPOINT, {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    requests: requests,
-                    zipFiles: zipFiles,
-                    auth_password: CONFIG.AUTH_PASSWORD
-                })
+                body: jsonData
             });
 
             if (response.ok) {
@@ -1253,11 +1231,20 @@ function setupEventHandlers() {
                     resultDiv.className = 'success';
                     resultDiv.style.display = 'block';
 
-                    // フォームをリセット
+                    // フォームを完全にリセット
                     this.reset();
+
+                    // すべてのrequest-setを削除
                     document.getElementById("requestContainer").innerHTML = "";
+
+                    // requestCountをリセット
                     requestCount = 0;
+
+                    // 新しいフォームセットを1つ作成
                     createRequestSet();
+
+                    // メンバードロップダウンを更新
+                    updateMemberDropdowns();
                 } else {
                     throw new Error('GAS側でエラーが発生しました');
                 }
