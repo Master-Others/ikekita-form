@@ -1,7 +1,7 @@
 
 // ビルド時に埋め込まれる設定値 ---
 const GAS_ID = "m2";
-const GAS_URL = "AKfycbz6THwpF85lzjS2FLRS44ZZie8WkFkoy2PLtBETp5wyuBpD_di7lAQtarjLyOIFlmbjAw";
+const GAS_URL = "AKfycbx-shxU2DOr2TP9EFlgaePZxPGXrAjxMwpiwcp_QO4GTGQSOcmQUwn-2F9DxxABpdLj6w";
 
 // フォーム項目リスト(JSON文字列として埋め込まれ、JSでパースされる)
 const FORM_FIELDS = JSON.parse('["マリン池袋北口駅前店"]');
