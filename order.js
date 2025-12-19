@@ -480,38 +480,26 @@ function createRequestSet() {
                 <!-- グループ4の作業区分 -->
             </div>
             <div class="main-block hidden" id="print-size-block_${requestCount}">
-                <div class="grid-table">
-                    <div class="grid-header">
-                        <div class="grid-cell"></div>
-                        <div class="grid-cell">A1</div>
-                        <div class="grid-cell">A2</div>
-                        <div class="grid-cell">A3</div>
-                        <div class="grid-cell">A4</div>
-                    </div>
-                    <div class="grid-row">
-                        <div class="grid-cell grid-label">普通紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A3"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="普通紙(ﾗﾐﾈｰﾄ加工)" data-size="A4"></label></div>
-                    </div>
-                    <div class="grid-row">
-                        <div class="grid-cell grid-label">写真紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="写真紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
-                    </div>
-                    <div class="grid-row">
-                        <div class="grid-cell grid-label">内照紙(ﾗﾐﾈｰﾄ加工)</div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A1"></label></div>
-                        <div class="grid-cell"><label class="grid-checkbox"><input type="checkbox" class="print-size-checkbox" data-type="内照紙(ﾗﾐﾈｰﾄ加工)" data-size="A2"></label></div>
-                    </div>
+                <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
+                <div class="button-group" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <!-- 普通紙 -->
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A1">普通紙 A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A2">普通紙 A2</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A3">普通紙 A3</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A4">普通紙 A4</button>
+                    <!-- 写真紙 -->
+                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ加工) A1">写真紙 A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ加工) A2">写真紙 A2</button>
+                    <!-- 内照紙 -->
+                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ加工) A1">内照紙 A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ加工) A2">内照紙 A2</button>
                 </div>
             </div>
         </div>
 
-        <div class="size-buttons">
-            <button type="button" class="size-toggle-btn" data-target="banner-size-block_${requestCount}">バナーサイズ一覧</button>
-            <button type="button" class="size-toggle-btn" data-target="print-size-block_${requestCount}">印刷サイズ一覧</button>
+        <div class="size-buttons" id="sizeButtonsWrapper_${requestCount}" style="display: none;">
+            <button type="button" class="size-toggle-btn" id="bannerSizeBtn_${requestCount}" data-target="banner-size-block_${requestCount}" style="display: none;">バナーサイズ一覧</button>
+            <button type="button" class="size-toggle-btn" id="printSizeBtn_${requestCount}" data-target="print-size-block_${requestCount}" style="display: none;">印刷サイズ一覧</button>
         </div>
 
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
@@ -553,17 +541,36 @@ function createRequestSet() {
     if (businessSelect && workCategoryWrapper) {
         businessSelect.addEventListener('change', function() {
             const selectedBusiness = this.value;
+            const sizeButtonsWrapper = div.querySelector(`#sizeButtonsWrapper_${requestCount}`);
+            const bannerSizeBtn = div.querySelector(`#bannerSizeBtn_${requestCount}`);
+            const printSizeBtn = div.querySelector(`#printSizeBtn_${requestCount}`);
 
             if (selectedBusiness) {
                 // 作業区分エリアを表示
                 workCategoryWrapper.style.display = 'block';
+
+                // サイズボタンの表示制御
+                if (sizeButtonsWrapper) {
+                    sizeButtonsWrapper.style.display = 'block';
+
+                    // バナーサイズボタンの表示判定
+                    if (bannerSizeBtn) {
+                        bannerSizeBtn.style.display = (selectedBusiness === 'バナー') ? 'inline-block' : 'none';
+                    }
+
+                    // 印刷サイズボタンの表示判定
+                    const printBusinesses = ['料金表', '画像全般', 'POPポスター', '看板', '避難経路図'];
+                    if (printSizeBtn) {
+                        printSizeBtn.style.display = printBusinesses.includes(selectedBusiness) ? 'inline-block' : 'none';
+                    }
+                }
 
                 // すべてのcategory-boxを非表示
                 allCategoryBoxes.forEach(box => {
                     box.style.display = 'none';
                 });
 
-                // すべてのモーダルを非表示（クラス名で一括取得）
+                // すべてのモーダルを非表示
                 const allModals = div.querySelectorAll('.explanation-modal');
                 allModals.forEach(modal => {
                     modal.classList.add('hidden');
@@ -576,14 +583,11 @@ function createRequestSet() {
                 allCategoryBoxes.forEach(box => {
                     const businessList = box.getAttribute('data-business');
                     if (businessList) {
-                        // カンマ区切りの業務区分リストを配列に変換
                         const businesses = businessList.split(',').map(b => b.trim());
-                        // 選択された業務区分が含まれているか確認
                         if (businesses.includes(selectedBusiness)) {
                             box.style.display = 'block';
                             foundBox = true;
 
-                            // グループ名を取得（例: category-box-group1 → group1）
                             const classList = box.className.split(' ');
                             const groupClass = classList.find(c => c.startsWith('category-box-group'));
                             if (groupClass) {
@@ -593,19 +597,19 @@ function createRequestSet() {
                     }
                 });
 
-                // 対応するグループのモーダルを表示可能な状態にする（hidden解除はしない、クリック時に表示）
-                // currentGroupを保存しておく
                 if (currentGroup) {
                     workCategoryWrapper.setAttribute('data-current-group', currentGroup);
                 }
 
-                // 該当するboxが見つからない場合の処理（オプション）
                 if (!foundBox) {
                     console.warn(`業務区分 "${selectedBusiness}" に対応するcategory-boxが見つかりません`);
                 }
             } else {
-                // 未選択の場合は作業区分エリアを非表示
+                // 未選択の場合は作業区分エリアとサイズボタンを非表示
                 workCategoryWrapper.style.display = 'none';
+                if (sizeButtonsWrapper) {
+                    sizeButtonsWrapper.style.display = 'none';
+                }
             }
         });
     }
@@ -826,6 +830,32 @@ function createRequestSet() {
     // サイズボタンのトグル処理
     const sizeButtons = div.querySelectorAll('.size-toggle-btn');
 
+    // 印刷サイズ挿入ボタンのイベント
+    const printInsertButtons = div.querySelectorAll('.print-size-insert-btn');
+    printInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const printSize = this.getAttribute('data-print-size');
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + printSize + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + printSize + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = printSize + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
     sizeButtons.forEach(button => {
         button.addEventListener('click', function() {
             const targetId = this.dataset.target;
@@ -876,43 +906,6 @@ function createRequestSet() {
             } else {
                 lastFocusedDetailsTextarea.value = sizeValue + ',';
             }
-
-            // フォーカスを戻す
-            lastFocusedDetailsTextarea.focus();
-        });
-    });
-
-    // 印刷サイズ挿入ボタンのイベント（バナーサイズと同じ仕組み）
-    const printCheckboxes = div.querySelectorAll('.print-size-checkbox');
-    printCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            if (!lastFocusedDetailsTextarea) {
-                alert('内容欄をクリックしてから、サイズを選択してください');
-                this.checked = false;
-                return;
-            }
-
-            const type = this.dataset.type;
-            const size = this.dataset.size;
-
-            // 同じタイプの全チェックボックスを取得
-            const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"]`);
-            const checkedSizes = Array.from(sameTypeCheckboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.dataset.size);
-
-            // 現在のtextarea値を解析して、このタイプのエントリを更新
-            let lines = lastFocusedDetailsTextarea.value.split(',').filter(l => l.trim());
-
-            // このタイプの既存エントリを削除
-            lines = lines.filter(line => !line.includes(type));
-
-            // チェックされたサイズがあれば新しいエントリを追加
-            if (checkedSizes.length > 0) {
-                lines.push(`${type}${checkedSizes.join(',')}`);
-            }
-
-            lastFocusedDetailsTextarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
 
             // フォーカスを戻す
             lastFocusedDetailsTextarea.focus();
@@ -975,7 +968,7 @@ function setupZipUpload(requestId) {
 // ファイル処理関数
 function handleFiles(files, requestId) {
     const fileList = document.getElementById(`zipFileList_${requestId}`);
-    const maxSize = 500 * 1024 * 1024; // 500MB
+    const maxSize = 100 * 1024 * 1024; // 100MB
 
     Array.from(files).forEach(file => {
         // ZIPファイルかチェック
@@ -1008,11 +1001,15 @@ function handleFiles(files, requestId) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const base64Data = e.target.result.split(',')[1];
-            
-            // ファイルデータを保存（フォーム送信時に使用）
-            fileItem.setAttribute('data-file-base64', base64Data);
-            fileItem.setAttribute('data-file-name', file.name);
-            fileItem.setAttribute('data-file-size', file.size);
+
+            // データURIスキームが正しく含まれているか確認
+            if (base64Data) {
+                fileItem.setAttribute('data-file-base64', base64Data);
+                fileItem.setAttribute('data-file-name', file.name);
+                fileItem.setAttribute('data-file-size', file.size);
+            } else {
+                console.error('Base64変換に失敗しました:', file.name);
+            }
         };
         reader.readAsDataURL(file);
 
