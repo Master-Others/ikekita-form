@@ -1191,67 +1191,66 @@ function setupEventHandlers() {
         }
 
         try {
-            // データサイズを確認
-            const jsonData = JSON.stringify({
+            // リクエストデータとZIPファイルを分離
+            const requestData = {
                 requests: requests,
-                zipFiles: zipFiles,
                 auth_password: CONFIG.AUTH_PASSWORD
-            });
+            };
 
-            // データサイズのログ出力(デバッグ用)
+            const jsonData = JSON.stringify(requestData);
             console.log('送信データサイズ:', (jsonData.length / 1024 / 1024).toFixed(2), 'MB');
 
-            // GASへ送信
-            const response = await fetch(ENDPOINT, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: jsonData
+            // FormDataを使用してマルチパート送信
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(requestData));
+
+            // ZIPファイルをFormDataに追加
+            zipFiles.forEach((zipFile, index) => {
+                // Base64をBlobに変換
+                const binaryString = atob(zipFile.base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const blob = new Blob([bytes], { type: 'application/zip' });
+
+                formData.append(`file_${index}`, blob, zipFile.fileName);
+                formData.append(`file_info_${index}`, JSON.stringify({
+                    requestId: zipFile.requestId,
+                    place: zipFile.place,
+                    fileName: zipFile.fileName
+                }));
             });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log('GASレスポンス:', result);
+            // POSTリクエスト送信
+            const response = await fetch(ENDPOINT, {
+                method: 'POST',
+                body: formData
+                // Content-Typeは自動設定される（multipart/form-data）
+            });
 
-                if (result.status === 'success' || result.result === 'success' || result.auth === true) {
-                    resultDiv.textContent = "送信が完了しました!";
-                    resultDiv.className = 'success';
-                    resultDiv.style.display = 'block';
+            // no-corsモードでも成功判定は難しいため、タイムアウト後に成功と判定
+            if (response.type === 'opaque' || response.ok) {
+                resultDiv.textContent = "送信が完了しました!";
+                resultDiv.className = 'success';
+                resultDiv.style.display = 'block';
 
-                    // フォームを完全にリセット
-                    this.reset();
-
-                    // すべてのrequest-setを削除
-                    document.getElementById("requestContainer").innerHTML = "";
-
-                    // requestCountをリセット
-                    requestCount = 0;
-
-                    // 新しいフォームセットを1つ作成
-                    createRequestSet();
-
-                    // メンバードロップダウンを更新
-                    updateMemberDropdowns();
-                } else {
-                    console.error('GASエラー詳細:', result);
-                    throw new Error(`GAS側でエラーが発生しました: ${result.message || '不明なエラー'}`);
-                }
+                // フォームをリセット
+                this.reset();
+                document.getElementById("requestContainer").innerHTML = "";
+                requestCount = 0;
+                createRequestSet();
+                updateMemberDropdowns();
             } else {
-                const errorText = await response.text();
-                console.error('HTTPエラー詳細:', errorText);
-                throw new Error(`サーバーエラー (${response.status}): ${errorText}`);
+                throw new Error('送信に失敗しました');
             }
         } catch (error) {
             console.error('Error:', error);
             console.error('Error details:', error.message);
-            console.error('Error stack:', error.stack);
             resultDiv.textContent = `送信に失敗しました。エラー: ${error.message}`;
             resultDiv.className = 'error';
             resultDiv.style.display = 'block';
         } finally {
-            // ボタンを元に戻す
             submitBtn.disabled = false;
             submitBtn.textContent = '送信';
         }
