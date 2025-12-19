@@ -1138,6 +1138,7 @@ function setupEventHandlers() {
 
             // 共通データ
             const commonData = {
+                requestId: requestId,
                 member: memberName,
                 member_custom: memberCustom,
                 group: CONFIG.GROUP_NAME_FROM_SHEET,
@@ -1149,7 +1150,6 @@ function setupEventHandlers() {
             if (checkedCategories.length === 0) {
                 requests.push({
                     ...commonData,
-                    requestId: requestId,
                     category: '',
                     details: '',
                     pattern: '',
@@ -1168,7 +1168,6 @@ function setupEventHandlers() {
                         // パターンが設定されていない場合は1行だけ作成
                         requests.push({
                             ...commonData,
-                            requestId: requestId,
                             category: categoryValue,
                             details: '',
                             pattern: '',
@@ -1192,7 +1191,6 @@ function setupEventHandlers() {
 
                             requests.push({
                                 ...commonData,
-                                requestId: requestId,
                                 category: categoryValue,
                                 pattern: patternText,
                                 sizeCount: sizeCount,
