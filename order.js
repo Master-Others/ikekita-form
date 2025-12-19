@@ -1228,6 +1228,7 @@ function setupEventHandlers() {
 
             if (response.ok) {
                 const result = await response.json();
+                console.log('GASレスポンス:', result);
 
                 if (result.status === 'success' || result.result === 'success' || result.auth === true) {
                     resultDiv.textContent = "送信が完了しました!";
@@ -1249,14 +1250,19 @@ function setupEventHandlers() {
                     // メンバードロップダウンを更新
                     updateMemberDropdowns();
                 } else {
-                    throw new Error('GAS側でエラーが発生しました');
+                    console.error('GASエラー詳細:', result);
+                    throw new Error(`GAS側でエラーが発生しました: ${result.message || '不明なエラー'}`);
                 }
             } else {
-                throw new Error('サーバーエラー');
+                const errorText = await response.text();
+                console.error('HTTPエラー詳細:', errorText);
+                throw new Error(`サーバーエラー (${response.status}): ${errorText}`);
             }
         } catch (error) {
             console.error('Error:', error);
-            resultDiv.textContent = "送信に失敗しました。もう一度お試しください。";
+            console.error('Error details:', error.message);
+            console.error('Error stack:', error.stack);
+            resultDiv.textContent = `送信に失敗しました。エラー: ${error.message}`;
             resultDiv.className = 'error';
             resultDiv.style.display = 'block';
         } finally {
