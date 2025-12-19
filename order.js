@@ -1149,6 +1149,7 @@ function setupEventHandlers() {
             if (checkedCategories.length === 0) {
                 requests.push({
                     ...commonData,
+                    requestId: requestId,
                     category: '',
                     details: '',
                     pattern: '',
@@ -1167,6 +1168,7 @@ function setupEventHandlers() {
                         // パターンが設定されていない場合は1行だけ作成
                         requests.push({
                             ...commonData,
+                            requestId: requestId,
                             category: categoryValue,
                             details: '',
                             pattern: '',
@@ -1190,6 +1192,7 @@ function setupEventHandlers() {
 
                             requests.push({
                                 ...commonData,
+                                requestId: requestId,
                                 category: categoryValue,
                                 pattern: patternText,
                                 sizeCount: sizeCount,
@@ -1210,8 +1213,8 @@ function setupEventHandlers() {
                 auth_password: CONFIG.AUTH_PASSWORD
             });
 
-            // データサイズのログ出力（デバッグ用）
-            console.log('送信データサイズ:', (jsonData.length / 102400 / 102400).toFixed(2), 'MB');
+            // データサイズのログ出力(デバッグ用)
+            console.log('送信データサイズ:', (jsonData.length / 1024 / 1024).toFixed(2), 'MB');
 
             // GASへ送信
             const response = await fetch(ENDPOINT, {
