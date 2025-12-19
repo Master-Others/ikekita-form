@@ -861,7 +861,7 @@ function createRequestSet() {
     sizeInsertButtons.forEach(button => {
         button.addEventListener('click', function() {
             const sizeValue = this.dataset.size;
-            
+
             if (!lastFocusedDetailsTextarea) {
                 alert('内容欄をクリックしてから、サイズを選択してください');
                 return;
@@ -882,56 +882,40 @@ function createRequestSet() {
         });
     });
 
-    // 印刷サイズチェックボックスのイベント
+    // 印刷サイズ挿入ボタンのイベント（バナーサイズと同じ仕組み）
     const printCheckboxes = div.querySelectorAll('.print-size-checkbox');
     printCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            // チェックされた貼り付け先を探す
-            const pasteCheckboxes = div.querySelectorAll('.paste-checkbox:checked');
-
-            if (pasteCheckboxes.length === 0) {
-                alert('貼り付け先のチェックボックスを選択してください');
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
                 this.checked = false;
                 return;
             }
 
-            // 優先順位順にソート（内容1が最優先）
-            const sortedCheckboxes = Array.from(pasteCheckboxes).sort((a, b) => {
-                const aMatch = a.id.match(/_(\d+)$/);
-                const bMatch = b.id.match(/_(\d+)$/);
-                const aIndex = aMatch ? parseInt(aMatch[1]) : 999;
-                const bIndex = bMatch ? parseInt(bMatch[1]) : 999;
-                return aIndex - bIndex;
-            });
+            const type = this.dataset.type;
+            const size = this.dataset.size;
 
-            // 最優先のtextareaに貼り付け
-            const targetCheckbox = sortedCheckboxes[0];
-            const targetId = targetCheckbox.id.replace('pasteCheck_', 'details_');
-            const textarea = div.querySelector(`textarea[name="${targetId}"]`);
+            // 同じタイプの全チェックボックスを取得
+            const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"]`);
+            const checkedSizes = Array.from(sameTypeCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.size);
 
-            if (textarea) {
-                const type = this.dataset.type;
-                const size = this.dataset.size;
+            // 現在のtextarea値を解析して、このタイプのエントリを更新
+            let lines = lastFocusedDetailsTextarea.value.split(',').filter(l => l.trim());
 
-                // 同じタイプの全チェックボックスを取得
-                const sameTypeCheckboxes = div.querySelectorAll(`.print-size-checkbox[data-type="${type}"]`);
-                const checkedSizes = Array.from(sameTypeCheckboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.dataset.size);
+            // このタイプの既存エントリを削除
+            lines = lines.filter(line => !line.includes(type));
 
-                // 現在のtextarea値を解析して、このタイプのエントリを更新
-                let lines = textarea.value.split(',').filter(l => l.trim());
-
-                // このタイプの既存エントリを削除
-                lines = lines.filter(line => !line.includes(type));
-
-                // チェックされたサイズがあれば新しいエントリを追加
-                if (checkedSizes.length > 0) {
-                    lines.push(`${type}${checkedSizes.join(',')}`);
-                }
-
-                textarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
+            // チェックされたサイズがあれば新しいエントリを追加
+            if (checkedSizes.length > 0) {
+                lines.push(`${type}${checkedSizes.join(',')}`);
             }
+
+            lastFocusedDetailsTextarea.value = lines.join(',') + (lines.length > 0 ? ',' : '');
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
         });
     });
 
@@ -1161,8 +1145,14 @@ function setupEventHandlers() {
                 checkedCategories.forEach(checkbox => {
                     const categoryValue = checkbox.value;
 
-                    // パターンブロックを取得
-                    const patternBlocks = requestSet.querySelectorAll(`.pattern-block`);
+                    // この作業区分に対応するアコーディオンアイテムを取得
+                    const accordionItem = Array.from(requestSet.querySelectorAll('.accordion-item')).find(item => {
+                        const enableCheck = item.querySelector('.enable-check');
+                        return enableCheck && enableCheck.value === categoryValue && enableCheck.checked;
+                    });
+
+                    // パターンブロックを取得（この作業区分のもののみ）
+                    const patternBlocks = accordionItem ? accordionItem.querySelectorAll('.pattern-block') : [];
 
                     if (patternBlocks.length === 0) {
                         // パターンが設定されていない場合は1行だけ作成
