@@ -1191,46 +1191,38 @@ function setupEventHandlers() {
         }
 
         try {
-            // リクエストデータとZIPファイルを分離
+            // ZIPファイルデータを整形
+            const zipFilesData = zipFiles.map(zipFile => ({
+                requestId: zipFile.requestId,
+                place: zipFile.place,
+                fileName: zipFile.fileName,
+                base64Data: zipFile.base64Data
+            }));
+
+            // リクエストデータを作成
             const requestData = {
                 requests: requests,
+                zipFiles: zipFilesData,
                 auth_password: CONFIG.AUTH_PASSWORD
             };
 
             const jsonData = JSON.stringify(requestData);
             console.log('送信データサイズ:', (jsonData.length / 1024 / 1024).toFixed(2), 'MB');
 
-            // FormDataを使用してマルチパート送信
-            const formData = new FormData();
-            formData.append('data', JSON.stringify(requestData));
-
-            // ZIPファイルをFormDataに追加
-            zipFiles.forEach((zipFile, index) => {
-                // Base64をBlobに変換
-                const binaryString = atob(zipFile.base64Data);
-                const bytes = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                const blob = new Blob([bytes], { type: 'application/zip' });
-
-                formData.append(`file_${index}`, blob, zipFile.fileName);
-                formData.append(`file_info_${index}`, JSON.stringify({
-                    requestId: zipFile.requestId,
-                    place: zipFile.place,
-                    fileName: zipFile.fileName
-                }));
-            });
-
-            // POSTリクエスト送信
+            // POSTリクエスト送信（JSON形式）
             const response = await fetch(ENDPOINT, {
                 method: 'POST',
-                body: formData
-                // Content-Typeは自動設定される（multipart/form-data）
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
             });
 
-            // no-corsモードでも成功判定は難しいため、タイムアウト後に成功と判定
-            if (response.type === 'opaque' || response.ok) {
+            // レスポンスを解析
+            const result = await response.json();
+            console.log('サーバーレスポンス:', result);
+
+            if (result.result === 'success') {
                 resultDiv.textContent = "送信が完了しました!";
                 resultDiv.className = 'success';
                 resultDiv.style.display = 'block';
@@ -1242,12 +1234,19 @@ function setupEventHandlers() {
                 createRequestSet();
                 updateMemberDropdowns();
             } else {
-                throw new Error('送信に失敗しました');
+                throw new Error(result.message || '送信に失敗しました');
             }
         } catch (error) {
             console.error('Error:', error);
             console.error('Error details:', error.message);
-            resultDiv.textContent = `送信に失敗しました。エラー: ${error.message}`;
+
+            // より詳細なエラー情報を表示
+            let errorMessage = `送信に失敗しました。\nエラー: ${error.message}`;
+            if (error.stack) {
+                console.error('Error stack:', error.stack);
+            }
+
+            resultDiv.textContent = errorMessage;
             resultDiv.className = 'error';
             resultDiv.style.display = 'block';
         } finally {
