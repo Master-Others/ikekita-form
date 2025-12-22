@@ -293,41 +293,38 @@ function createRequestSet() {
         <div class="work-category-wrapper" id="workCategoryWrapper_${requestCount}" style="display: none;">
             <label class="main-label mark">作業区分 <i class="far fa-question-circle question-icon"></i></label>
 
-            <!-- グループ1用モーダル -->
+            <!-- グループ1用モーダル（バナー） -->
             <div id="explanationModal_group1_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group1">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【作業区分の入力方法】</strong><br>
-                    パターン数（何種類の制作をするか）を入力（最大9まで）、<br>
-                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各欄に（制作名・説明）を入力し、サイズ数（横 x 縦が異なる制作物がいくつ必要か）を入力（最大20まで）
+                    パターン数（何種類の制作をするか）を入力し（最大9まで）、SETボタンを押す。<br>
+                    各欄に制作タイトル、サイズ数（横 x 縦の画像サイズの必要数※最大20まで）、内容（詳細説明）を入力してください。
                     </p>
                 </div>
             </div>
 
-            <!-- グループ2用モーダル -->
+            <!-- グループ2用モーダル（料金表） -->
             <div id="explanationModal_group2_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group2">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【作業区分の入力方法】</strong><br>
-                    パターン数（何種類の画像を制作するか）を入力（最大9まで）、<br>
-                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各欄に動画の長さや画像の用途を入力し、必要な枚数・本数を入力してください。
+                    パターン数（何種類の画像を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
+                    各欄に制作タイトル、サイズ数（横 x 縦の画像サイズ・印刷サイズの必要数※最大20まで）、内容（詳細説明・印刷枚数）を入力してください。
                     </p>
                 </div>
             </div>
 
-            <!-- グループ3用モーダル -->
+            <!-- グループ3用モーダル（POPポスター・看板） -->
             <div id="explanationModal_group3_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group3">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【印刷物制作の入力方法】</strong><br>
-                    パターン数（何種類の印刷物を制作するか）を入力（最大9まで）、<br>
-                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
-                    各欄に印刷サイズ（A4、A3など）と枚数を入力してください。
+                    パターン数（何種類の印刷物を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
+                    各欄に制作タイトル、印刷サイズの必要数（A3・A4など）、内容（詳細説明・印刷枚数）を入力してください。
                     </p>
                 </div>
             </div>
@@ -338,8 +335,7 @@ function createRequestSet() {
                     <span class="close-btn">&times;</span>
                     <p>
                     <strong>【図面制作の入力方法】</strong><br>
-                    パターン数（何種類の図面を制作するか）を入力（最大9まで）、<br>
-                    SETボタンを押すと、パターン数と同じ数の入力項目が表示される。<br>
+                    パターン数（何種類の図面を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
                     各欄に建物名や階数など、図面の詳細を入力してください。
                     </p>
                 </div>
@@ -522,7 +518,7 @@ function createRequestSet() {
                 <p>ZIPファイルをドラッグ＆ドロップ<br>または</p>
                 <button type="button" class="file-select-btn" id="fileSelectBtn_${requestCount}">ファイルを選択</button>
                 <input type="file" id="zipFileInput_${requestCount}" accept=".zip" style="display: none;">
-                <p class="file-info">ファイル形式: ZIP / 最大容量: 100MB</p>
+                <p class="file-info">ファイル形式: ZIP / 最大容量: 30MB</p>
             </div>
             <div class="zip-file-list" id="zipFileList_${requestCount}"></div>
         </div>
@@ -730,7 +726,7 @@ function createRequestSet() {
                 patternInput.type = 'text';
                 patternInput.className = 'pattern-text-input';
                 patternInput.name = `pattern_text_${requestCount}_${categoryValue}_${i}`;
-                patternInput.placeholder = `パターン${i}`;
+                patternInput.placeholder = `パターン${i}タイトル`;
 
                 // 「サイズ数」ラベル
                 const sizeLabel = document.createElement('span');
@@ -968,7 +964,7 @@ function setupZipUpload(requestId) {
 // ファイル処理関数
 function handleFiles(files, requestId) {
     const fileList = document.getElementById(`zipFileList_${requestId}`);
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    const maxSize = 30 * 1024 * 1024; // 30MB（安全な上限）
 
     Array.from(files).forEach(file => {
         // ZIPファイルかチェック
@@ -979,7 +975,7 @@ function handleFiles(files, requestId) {
 
         // ファイルサイズチェック
         if (file.size > maxSize) {
-            alert(`${file.name} のサイズが500MBを超えています。`);
+            alert(`${file.name} のサイズが30MBを超えています。\n\n送信フォーム制限により、30MB以下のファイルのみアップロード可能です。\nファイルを分割するか、圧縮率を上げてください。`);
             return;
         }
 
@@ -1219,7 +1215,8 @@ function setupEventHandlers() {
             };
 
             const jsonData = JSON.stringify(requestData);
-            console.log('送信データサイズ:', (jsonData.length / 1024 / 1024).toFixed(2), 'MB');
+            const dataSizeMB = jsonData.length / 1024 / 1024;
+            console.log('送信データサイズ:', dataSizeMB.toFixed(2), 'MB');
             console.log('ZIPファイル数:', zipFilesData.length);
             if (zipFilesData.length > 0) {
                 console.log('ZIPファイル詳細:', zipFilesData.map(z => ({
@@ -1228,6 +1225,11 @@ function setupEventHandlers() {
                     fileName: z.fileName,
                     base64Length: z.base64Data ? z.base64Data.length : 0
                 })));
+            }
+
+            // ペイロードサイズチェック（50MB制限）
+            if (dataSizeMB > 45) {
+                throw new Error(`送信データサイズが大きすぎます（${dataSizeMB.toFixed(2)}MB）。\n\n送信フォームの制限により、45MB以下にする必要があります。\nZIPファイルのサイズを小さくしてください。`);
             }
 
             // POSTリクエスト送信（JSON形式）
