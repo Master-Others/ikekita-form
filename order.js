@@ -1230,21 +1230,19 @@ function setupEventHandlers() {
                 })));
             }
 
-            // POSTリクエスト送信（GAS用にパラメータ形式で送信）
+            // POSTリクエスト送信（JSON形式）
             const response = await fetch(ENDPOINT, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: {
-                    'Content-Type': 'text/plain'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: jsonData
             });
 
-            // no-corsモードの場合、レスポンスは読み取れないため成功と判定
-            console.log('送信完了（no-corsモード）');
-
-            // 少し待ってから成功と判定
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // レスポンスのチェック
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             // レスポンスを解析
             const result = await response.json();
