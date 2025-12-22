@@ -1101,11 +1101,21 @@ function setupEventHandlers() {
 
             // ZIPファイルの取得
             const zipFileItems = requestSet.querySelectorAll('.zip-file-item');
+            console.log('request-set ' + requestId + ' のZIPファイル数:', zipFileItems.length);
+
             zipFileItems.forEach(item => {
                 const base64Data = item.getAttribute('data-file-base64');
                 const fileName = item.getAttribute('data-file-name');
                 const fileSize = item.getAttribute('data-file-size');
-                
+
+                console.log('ZIPファイル情報:', {
+                    requestId: requestId,
+                    fileName: fileName,
+                    fileSize: fileSize,
+                    hasBase64: !!base64Data,
+                    base64Length: base64Data ? base64Data.length : 0
+                });
+
                 if (base64Data) {
                     zipFiles.push({
                         requestId: requestId,
@@ -1114,6 +1124,8 @@ function setupEventHandlers() {
                         fileSize: fileSize,
                         base64Data: base64Data
                     });
+                } else {
+                    console.warn('base64Dataが空です:', fileName);
                 }
             });
 
@@ -1208,6 +1220,15 @@ function setupEventHandlers() {
 
             const jsonData = JSON.stringify(requestData);
             console.log('送信データサイズ:', (jsonData.length / 1024 / 1024).toFixed(2), 'MB');
+            console.log('ZIPファイル数:', zipFilesData.length);
+            if (zipFilesData.length > 0) {
+                console.log('ZIPファイル詳細:', zipFilesData.map(z => ({
+                    requestId: z.requestId,
+                    place: z.place,
+                    fileName: z.fileName,
+                    base64Length: z.base64Data ? z.base64Data.length : 0
+                })));
+            }
 
             // POSTリクエスト送信（GAS用にパラメータ形式で送信）
             const response = await fetch(ENDPOINT, {
