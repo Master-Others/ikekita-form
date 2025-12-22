@@ -1246,11 +1246,28 @@ function setupEventHandlers() {
             // 少し待ってから成功と判定
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const result = { result: 'success' };
+            // レスポンスを解析
+            const result = await response.json();
+            console.log('サーバーレスポンス:', result);
 
             if (result.result === 'success') {
-                resultDiv.textContent = "送信が完了しました!";
-                resultDiv.className = 'success';
+                let message = "送信が完了しました!";
+
+                // ZIPファイルのエラー情報を表示
+                if (result.zipErrors && result.zipErrors.length > 0) {
+                    console.error('ZIPファイル保存エラー:', result.zipErrors);
+                    message += `\n\n注意: ZIPファイルの一部が保存できませんでした。`;
+                    message += `\n成功: ${result.zipSuccess}件 / 失敗: ${result.zipErrors.length}件`;
+                    result.zipErrors.forEach((err, index) => {
+                        console.error(`ZIPエラー ${index + 1}:`, err);
+                        message += `\n- ${err.fileName}: ${err.error}`;
+                    });
+                } else if (result.zipTotal > 0) {
+                    message += `\nZIPファイル: ${result.zipSuccess}件保存しました。`;
+                }
+
+                resultDiv.textContent = message;
+                resultDiv.className = result.zipErrors && result.zipErrors.length > 0 ? 'warning' : 'success';
                 resultDiv.style.display = 'block';
 
                 // フォームをリセット
