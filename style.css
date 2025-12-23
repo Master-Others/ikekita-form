@@ -340,7 +340,7 @@ button {
   color: white;
 }
 #addRequest:hover {
-  background: #455758;
+  background: #033663;
 }
 #submitBtn {
   display: block;
@@ -348,11 +348,11 @@ button {
   margin: 20px auto;
 }
 button[type="submit"] {
-  background: #2e78ff;
+  background: #2b61c3;
   color: white;
 }
 button[type="submit"]:hover {
-  background: #ffb62e;
+  background: #34b1d9;
 }
 button:disabled {
   background: #bdc3c7;
@@ -730,7 +730,7 @@ textarea.sync-target {
   transition: background-color 0.3s;
 }
 .file-select-btn:hover {
-  background-color: #45a049;
+  background-color: #1a7011;
 }
 .file-info {
   font-size: 12px;
@@ -790,7 +790,7 @@ textarea.sync-target {
   margin-bottom: 10px;
 }
 
-.size-insert-btn , .print-size-insert-btn {
+.size-insert-btn , .print-size-insert-btn , .annotation-insert-btn {
   padding: 8px 12px;
   background-color: #A8701D;
   color: white;
@@ -802,7 +802,7 @@ textarea.sync-target {
 }
 
 .size-insert-btn:hover {
-  background-color: #a81d9a;
+  background-color: #a92912;
 }
 
 .size-insert-btn:active {
