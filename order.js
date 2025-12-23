@@ -922,6 +922,32 @@ function createRequestSet() {
     // サイズボタンのトグル処理
     const sizeButtons = div.querySelectorAll('.size-toggle-btn');
 
+    // バナーサイズ挿入ボタンのイベント
+    const sizeInsertButtons = div.querySelectorAll('.size-insert-btn');
+    sizeInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sizeValue = this.dataset.size;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = sizeValue + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
     // 印刷サイズ挿入ボタンのイベント
     const printInsertButtons = div.querySelectorAll('.print-size-insert-btn');
     printInsertButtons.forEach(button => {
@@ -941,6 +967,32 @@ function createRequestSet() {
                 lastFocusedDetailsTextarea.value = currentValue + printSize + ',';
             } else {
                 lastFocusedDetailsTextarea.value = printSize + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // 注釈挿入ボタンのイベント
+    const annotationInsertButtons = div.querySelectorAll('.annotation-insert-btn');
+    annotationInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const annotationValue = this.dataset.annotation;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、注釈を選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + annotationValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + annotationValue;
+            } else {
+                lastFocusedDetailsTextarea.value = annotationValue;
             }
 
             // フォーカスを戻す
@@ -980,58 +1032,6 @@ function createRequestSet() {
         if (e.target.classList.contains('sync-target')) {
             lastFocusedDetailsTextarea = e.target;
         }
-    });
-
-    // バナーサイズ挿入ボタンのイベント
-    const sizeInsertButtons = div.querySelectorAll('.size-insert-btn');
-    sizeInsertButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const sizeValue = this.dataset.size;
-
-            if (!lastFocusedDetailsTextarea) {
-                alert('内容欄をクリックしてから、サイズを選択してください');
-                return;
-            }
-
-            // 現在の値に追加
-            const currentValue = lastFocusedDetailsTextarea.value;
-            if (currentValue && !currentValue.endsWith(',')) {
-                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
-            } else if (currentValue) {
-                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
-            } else {
-                lastFocusedDetailsTextarea.value = sizeValue + ',';
-            }
-
-            // フォーカスを戻す
-            lastFocusedDetailsTextarea.focus();
-        });
-    });
-
-    // 注釈挿入ボタンのイベント
-    const annotationInsertButtons = div.querySelectorAll('.annotation-insert-btn');
-    annotationInsertButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const annotationValue = this.dataset.annotation;
-
-            if (!lastFocusedDetailsTextarea) {
-                alert('内容欄をクリックしてから、注釈を選択してください');
-                return;
-            }
-
-            // 現在の値に追加
-            const currentValue = lastFocusedDetailsTextarea.value;
-            if (currentValue && !currentValue.endsWith(',')) {
-                lastFocusedDetailsTextarea.value = currentValue + ',' + annotationValue + ',';
-            } else if (currentValue) {
-                lastFocusedDetailsTextarea.value = currentValue + annotationValue + ',';
-            } else {
-                lastFocusedDetailsTextarea.value = annotationValue + ',';
-            }
-
-            // フォーカスを戻す
-            lastFocusedDetailsTextarea.focus();
-        });
     });
 
     // 削除ボタンのイベント
