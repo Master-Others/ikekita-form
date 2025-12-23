@@ -539,29 +539,24 @@ function createRequestSet() {
                     </div>
                 </div>
             </div>
-            <div class="main-block hidden" id="print-size-block_${requestCount}">
-                <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
-                <div class="button-group" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                    <!-- 普通紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A1">普通紙(ﾗﾐﾈｰﾄ)A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A2">普通紙(ﾗﾐﾈｰﾄ)A2</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A3">普通紙(ﾗﾐﾈｰﾄ)A3</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A4">普通紙(ﾗﾐﾈｰﾄ)A4</button>
-
-                    <!-- 写真紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A1">写真紙(ﾗﾐﾈｰﾄ)A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A2">写真紙(ﾗﾐﾈｰﾄ)A2</button>
-                    <!-- 内照紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A1">内照紙(ﾗﾐﾈｰﾄ)A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A2">内照紙(ﾗﾐﾈｰﾄ)A2</button>
-                </div>
-            </div>
         </div>
 
         <div class="size-buttons" id="sizeButtonsWrapper_${requestCount}" style="display: none;">
-            <button type="button" class="size-toggle-btn" id="bannerSizeBtn_${requestCount}" data-target="banner-size-block_${requestCount}" style="display: none;">バナーサイズ一覧</button>
-            <button type="button" class="size-toggle-btn" id="annotationBtn_${requestCount}" data-target="annotation-block_${requestCount}" style="display: none;">注釈一覧</button>
-            <button type="button" class="size-toggle-btn" id="printSizeBtn_${requestCount}" data-target="print-size-block_${requestCount}" style="display: none;">印刷サイズ一覧</button>
+            <button type="button" class="size-toggle-btn"
+                id="bannerSizeBtn_${requestCount}"
+                data-target="banner-size-block_${requestCount}"
+                data-original-text="バナーサイズ一覧"
+                style="display: none;">バナーサイズ一覧</button>
+            <button type="button" class="size-toggle-btn"
+                id="annotationBtn_${requestCount}"
+                data-target="annotation-block_${requestCount}"
+                data-original-text="注釈一覧"
+                style="display: none;">注釈一覧</button>
+            <button type="button" class="size-toggle-btn"
+                id="printSizeBtn_${requestCount}"
+                data-target="print-size-block_${requestCount}"
+                data-original-text="印刷サイズ一覧"
+                style="display: none;">印刷サイズ一覧</button>
         </div>
 
         <div class="main-block hidden" id="banner-size-block_${requestCount}">
@@ -583,6 +578,24 @@ function createRequestSet() {
                 <button type="button" class="annotation-insert-btn" data-annotation="(GIF画像)">(GIF画像)</button>
                 <button type="button" class="annotation-insert-btn" data-annotation="(1MB以下)">(1MB以下)</button>
                 <button type="button" class="annotation-insert-btn" data-annotation="(500KB以下)">(500KB以下)</button>
+            </div>
+        </div>
+
+        <div class="main-block hidden" id="print-size-block_${requestCount}">
+            <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
+            <div class="button-group" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <!-- 普通紙 -->
+                <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A1">普通紙(ﾗﾐﾈｰﾄ)A1</button>
+                <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A2">普通紙(ﾗﾐﾈｰﾄ)A2</button>
+                <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A3">普通紙(ﾗﾐﾈｰﾄ)A3</button>
+                <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A4">普通紙(ﾗﾐﾈｰﾄ)A4</button>
+
+                <!-- 写真紙 -->
+                <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A1">写真紙(ﾗﾐﾈｰﾄ)A1</button>
+                <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A2">写真紙(ﾗﾐﾈｰﾄ)A2</button>
+                <!-- 内照紙 -->
+                <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A1">内照紙(ﾗﾐﾈｰﾄ)A1</button>
+                <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A2">内照紙(ﾗﾐﾈｰﾄ)A2</button>
             </div>
         </div>
 
@@ -936,6 +949,11 @@ function createRequestSet() {
     });
 
     sizeButtons.forEach(button => {
+        // 初期テキストを保存（HTML側で data-original-text を付けている場合は不要）
+        if (!button.dataset.originalText) {
+            button.dataset.originalText = button.textContent.trim();
+        }
+
         button.addEventListener('click', function() {
             const targetId = this.dataset.target;
             const targetBlock = document.getElementById(targetId);
@@ -943,13 +961,12 @@ function createRequestSet() {
             if (targetBlock) {
                 targetBlock.classList.toggle('hidden');
 
-                // ボタンのテキストを変更するロジック
                 if (targetBlock.classList.contains('hidden')) {
-                    // 隠れた → テキストを「一覧 ＋」に戻す
-                    this.innerHTML = 'CLOSE <i class="fas fa-plus-circle"></i>';
+                    // 隠れた → 元のテキストに戻す（＋アイコン付き）
+                    this.innerHTML = `${this.dataset.originalText} <i class="fas fa-plus-circle"></i>`;
                 } else {
-                    // 表示された → テキストを「一覧 −」にする
-                    this.innerHTML = 'CLOSE <i class="fas fa-minus-circle"></i>';
+                    // 表示された → CLOSE（−アイコン付き）
+                    this.innerHTML = `CLOSE <i class="fas fa-minus-circle"></i>`;
                 }
             }
         });
