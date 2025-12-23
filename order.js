@@ -543,22 +543,24 @@ function createRequestSet() {
                 <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
                 <div class="button-group" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
                     <!-- 普通紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A1">普通紙 A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A2">普通紙 A2</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A3">普通紙 A3</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ加工) A4">普通紙 A4</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A1">普通紙(ﾗﾐﾈｰﾄ)A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A2">普通紙(ﾗﾐﾈｰﾄ)A2</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A3">普通紙(ﾗﾐﾈｰﾄ)A3</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="普通紙(ﾗﾐﾈｰﾄ)A4">普通紙(ﾗﾐﾈｰﾄ)A4</button>
+
                     <!-- 写真紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ加工) A1">写真紙 A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ加工) A2">写真紙 A2</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A1">写真紙(ﾗﾐﾈｰﾄ)A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="写真紙(ﾗﾐﾈｰﾄ)A2">写真紙(ﾗﾐﾈｰﾄ)A2</button>
                     <!-- 内照紙 -->
-                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ加工) A1">内照紙 A1</button>
-                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ加工) A2">内照紙 A2</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A1">内照紙(ﾗﾐﾈｰﾄ)A1</button>
+                    <button type="button" class="print-size-insert-btn" data-print-size="内照紙(ﾗﾐﾈｰﾄ)A2">内照紙(ﾗﾐﾈｰﾄ)A2</button>
                 </div>
             </div>
         </div>
 
         <div class="size-buttons" id="sizeButtonsWrapper_${requestCount}" style="display: none;">
             <button type="button" class="size-toggle-btn" id="bannerSizeBtn_${requestCount}" data-target="banner-size-block_${requestCount}" style="display: none;">バナーサイズ一覧</button>
+            <button type="button" class="size-toggle-btn" id="annotationBtn_${requestCount}" data-target="annotation-block_${requestCount}" style="display: none;">注釈一覧</button>
             <button type="button" class="size-toggle-btn" id="printSizeBtn_${requestCount}" data-target="print-size-block_${requestCount}" style="display: none;">印刷サイズ一覧</button>
         </div>
 
@@ -572,6 +574,15 @@ function createRequestSet() {
                 <button type="button" class="size-insert-btn" data-size="700x300">700x300</button>
                 <button type="button" class="size-insert-btn" data-size="580x250">580x250</button>
                 <button type="button" class="size-insert-btn" data-size="1500x500">1500x500</button>
+            </div>
+        </div>
+
+        <div class="main-block hidden" id="annotation-block_${requestCount}">
+            <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
+            <div class="button-group" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <button type="button" class="annotation-insert-btn" data-annotation="(GIF画像)">(GIF画像)</button>
+                <button type="button" class="annotation-insert-btn" data-annotation="(1MB以下)">(1MB以下)</button>
+                <button type="button" class="annotation-insert-btn" data-annotation="(500KB以下)">(500KB以下)</button>
             </div>
         </div>
 
@@ -604,6 +615,7 @@ function createRequestSet() {
             const sizeButtonsWrapper = div.querySelector(`#sizeButtonsWrapper_${requestCount}`);
             const bannerSizeBtn = div.querySelector(`#bannerSizeBtn_${requestCount}`);
             const printSizeBtn = div.querySelector(`#printSizeBtn_${requestCount}`);
+            const annotationBtn = div.querySelector(`#annotationBtn_${requestCount}`);
 
             if (selectedBusiness) {
                 // 作業区分エリアを表示
@@ -613,15 +625,22 @@ function createRequestSet() {
                 if (sizeButtonsWrapper) {
                     sizeButtonsWrapper.style.display = 'block';
 
+
                     // バナーサイズボタンの表示判定
                     if (bannerSizeBtn) {
-                        bannerSizeBtn.style.display = (selectedBusiness === 'バナー') ? 'inline-block' : 'none';
+                        // バナーと料金表の時に表示
+                        bannerSizeBtn.style.display = (selectedBusiness === 'バナー' || selectedBusiness === '料金表') ? 'inline-block' : 'none';
                     }
 
                     // 印刷サイズボタンの表示判定
                     const printBusinesses = ['料金表', '画像全般', 'POPポスター', '看板', '避難経路図'];
                     if (printSizeBtn) {
                         printSizeBtn.style.display = printBusinesses.includes(selectedBusiness) ? 'inline-block' : 'none';
+                    }
+
+                    // 注釈ボタンの表示判定（バナーの時のみ）
+                    if (annotationBtn) {
+                        annotationBtn.style.display = (selectedBusiness === 'バナー') ? 'inline-block' : 'none';
                     }
                 }
 
@@ -965,6 +984,32 @@ function createRequestSet() {
                 lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
             } else {
                 lastFocusedDetailsTextarea.value = sizeValue + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // 注釈挿入ボタンのイベント
+    const annotationInsertButtons = div.querySelectorAll('.annotation-insert-btn');
+    annotationInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const annotationValue = this.dataset.annotation;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、注釈を選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + annotationValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + annotationValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = annotationValue + ',';
             }
 
             // フォーカスを戻す

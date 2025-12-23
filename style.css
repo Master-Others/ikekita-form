@@ -343,15 +343,15 @@ button {
 }
 #submitBtn {
   display: block;
-  max-width: 330px;
+  max-width: 100%;
   margin: 20px auto;
 }
 button[type="submit"] {
-  background: #0cab46;
+  background: #2e78ff;
   color: white;
 }
 button[type="submit"]:hover {
-  background: #197939;
+  background: #ffb62e;
 }
 button:disabled {
   background: #bdc3c7;
@@ -359,7 +359,7 @@ button:disabled {
 }
 #result {
   display: block;
-  max-width: 330px;
+  max-width: 100%;
   margin: 20px auto 0;
   padding: 15px;
   border-radius: 4px;
@@ -374,7 +374,7 @@ button:disabled {
   max-width: 100%;
 }
 #result.error {
-  max-width: 330px;
+  max-width: 100%;
   margin: 20px auto 0;
   padding: 15px;
   border-radius: 4px;
