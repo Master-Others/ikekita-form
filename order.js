@@ -329,14 +329,14 @@ function createRequestSet() {
                 </div>
             </div>
 
-            <!-- グループ4用モーダル -->
+            <!-- グループ4用モーダル（POPポスター・看板） -->
             <div id="explanationModal_group4_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group4">
                 <div class="modal-content">
                     <span class="close-btn">&times;</span>
                     <p>
-                    <strong>【図面制作の入力方法】</strong><br>
-                    パターン数（何種類の図面を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
-                    各欄に建物名や階数など、図面の詳細を入力してください。
+                    <strong>【印刷物制作の入力方法】</strong><br>
+                    パターン数（何種類の印刷物を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
+                    各欄に制作タイトル、印刷サイズの必要数（A3・A4など）、内容（詳細説明・印刷枚数）を入力してください。
                     </p>
                 </div>
             </div>
@@ -354,8 +354,20 @@ function createRequestSet() {
                 </div>
             </div>
 
-            <!-- グループ1: バナー、料金表 で共通 -->
-            <div class="category-box category-box-group1" data-business="バナー,料金表" style="display: none;">
+            <!-- グループ6用モーダル -->
+            <div id="explanationModal_group6_${requestCount}" class="modal hidden explanation-modal" data-modal-group="group6">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <p>
+                    <strong>【図面制作の入力方法】</strong><br>
+                    パターン数（何種類の図面を制作するか）を入力し（最大9まで）、SETボタンを押す。<br>
+                    各欄に建物名や階数など、図面の詳細を入力してください。
+                    </p>
+                </div>
+            </div>
+
+            <!-- グループ1: バナー -->
+            <div class="category-box category-box-group1" data-business="バナー" style="display: none;">
                 <div class="category-label-wrapper">
                     <div class="accordion-item" id="item-1_${requestCount}">
                         <div class="accordion-header">
@@ -410,8 +422,8 @@ function createRequestSet() {
                 </div>
             </div>
 
-            <!-- グループ2: グラビア、組織図 で共通 -->
-            <div class="category-box category-box-group2" data-business="グラビア,組織図" style="display: none;">
+            <!-- グループ2: 料金表 で共通 -->
+            <div class="category-box category-box-group2" data-business="料金表" style="display: none;">
                 <div class="category-label-wrapper">
                     <div class="accordion-item" id="item-1_${requestCount}" data-group="group2">
                         <div class="accordion-header">
@@ -474,6 +486,58 @@ function createRequestSet() {
             <!-- グループ4: POPポスター で共通 -->
             <div class="category-box category-box-group4" data-business="POPポスター" style="display: none;">
                 <!-- グループ4の作業区分 -->
+                <div class="category-label-wrapper">
+                    <div class="accordion-item" id="item-1_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規作成">
+                                <span class="item-title">新規作成</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pattern-rows-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-2_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
+                                <span class="item-title">修正</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pattern-rows-container"></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item" id="item-3_${requestCount}">
+                        <div class="accordion-header">
+                            <label class="category-label">
+                                <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="その他">
+                                <span class="item-title">その他</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="label-text">パターン数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pattern-rows-container"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="main-block hidden" id="print-size-block_${requestCount}">
                 <p class="size-help-text">クリックで内容欄に追加されます（最後にフォーカスした内容欄が対象）</p>
