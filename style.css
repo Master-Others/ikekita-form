@@ -302,9 +302,10 @@ textarea.note-box {
   display: none !important;
 }
 .size-buttons {
-  display: flex;
+  display: flex !important;
   gap: 10px;
   margin: 10px 0;
+  justify-content: space-between;
 }
 .size-toggle-btn {
   padding: 10px 5px;
@@ -316,7 +317,7 @@ textarea.note-box {
   font-size: 14px;
 }
 .size-toggle-btn:hover {
-  background-color: #d95200;
+  background-color: #a81d9a;
 }
 
 /* メインボタンのスタイル */
@@ -789,9 +790,9 @@ textarea.sync-target {
   margin-bottom: 10px;
 }
 
-.size-insert-btn {
+.size-insert-btn , .print-size-insert-btn {
   padding: 8px 12px;
-  background-color: #4CAF50;
+  background-color: #A8701D;
   color: white;
   border: none;
   border-radius: 4px;
@@ -801,9 +802,9 @@ textarea.sync-target {
 }
 
 .size-insert-btn:hover {
-  background-color: #45a049;
+  background-color: #a81d9a;
 }
 
 .size-insert-btn:active {
-  background-color: #3d8b40;
+  background-color: #fe6c6c;
 }
