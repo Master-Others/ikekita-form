@@ -522,7 +522,7 @@ function createRequestSet() {
                                 <span class="item-title">修正</span>
                             </label>
                             <div class="input-group">
-                                <span class="label-text"パターン数</span>
+                                <span class="label-text">パターン数</span>
                                 <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
                                 <button type="button" class="set-btn">SET</button>
                             </div>
@@ -561,7 +561,7 @@ function createRequestSet() {
                                 <span class="item-title">修正</span>
                             </label>
                             <div class="input-group">
-                                <span class="label-text"パターン数</span>
+                                <span class="label-text">パターン数</span>
                                 <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
                                 <button type="button" class="set-btn">SET</button>
                             </div>
