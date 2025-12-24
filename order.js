@@ -146,10 +146,8 @@ function createRequestSet() {
 
     let memberOptions = "";
 
-    if (MASTER_DATA.members.length === 0) {
-        // 通信待ちの状態（まだデータがない）
-        memberOptions = `<option value="" disabled>データ読み込み中...</option>`;
-    } else {
+    // メンバーリストが読み込まれていない場合は空文字列（updateMemberDropdowns関数で後から更新される）
+    if (MASTER_DATA.members.length > 0) {
         // データがある状態（2行目の追加ボタンを押した時や、通信完了後）
         memberOptions = MASTER_DATA.members.map(member => {
             return `<option value="${member}">${member}</option>`;
@@ -219,7 +217,7 @@ function createRequestSet() {
 
         // データが読み込まれている場合のみ「同上」オプションを追加
         let sameAsAboveOption = '';
-        if (MASTER_DATA.members.length > 0) {
+        if (previousMember || previousMemberCustom) {
             sameAsAboveOption = `<option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>`;
         }
 
@@ -232,7 +230,8 @@ function createRequestSet() {
             </select>`;
         memberCustomHTML = `<input class="member_custom" type="text" name="member_custom_${requestCount}" data-index="${requestCount}" placeholder="未登録者の場合はこちらに入力" value="${previousMemberCustom}">`;
     } else {
-        // 初回
+        // 初回 - データ読み込み中の場合も考慮
+        const loadingOption = MASTER_DATA.members.length === 0 ? '' : '';
         memberSelectHTML = `
             <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
                 <option value="">選択</option>
