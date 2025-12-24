@@ -939,6 +939,11 @@ function createRequestSet() {
             const priceSizeBtn = div.querySelector(`#priceSizeBtn_${requestCount}`);
             const priceAnnotationBtn = div.querySelector(`#priceAnnotationBtn_${requestCount}`);
 
+            // 全てのカテゴリボックスを非表示
+            allCategoryBoxes.forEach(box => {
+                box.style.display = 'none';
+            });
+
             // 全てのボタンを配列化して一旦非表示にする関数
             const allBtns = [
                 bannerSizeBtn, annotationBtn, printSizeBtn,
@@ -955,40 +960,105 @@ function createRequestSet() {
                 // 業務カテゴリ表示
                 workCategoryWrapper.style.display = 'block';
 
-                if (sizeButtonsWrapper) {
-                    // まずラッパーを表示し、ボタンを全リセット
-                    sizeButtonsWrapper.style.display = 'block';
-                    hideAllButtons();
+                // 選択された業務区分に対応するカテゴリボックスを表示
+                let currentGroup = '';
 
-                    // 条件分岐で必要なボタンだけを表示 (inline-block)
-                    if (selectedBusiness === 'バナー') {
+                if (selectedBusiness === 'バナー') {
+                    const targetBox = div.querySelector('.category-box-group1');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group1';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                         if (bannerSizeBtn) bannerSizeBtn.style.display = 'inline-block';
                         if (annotationBtn) annotationBtn.style.display = 'inline-block';
+                    }
 
-                    } else if (selectedBusiness === 'LP') {
+                } else if (selectedBusiness === 'LP') {
+                    const targetBox = div.querySelector('.category-box-group2');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group2';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                         if (lpSizeBtn) lpSizeBtn.style.display = 'inline-block';
                         if (lpAnnotationBtn) lpAnnotationBtn.style.display = 'inline-block';
+                    }
 
-                    } else if (selectedBusiness === '料金表') {
+                } else if (selectedBusiness === '料金表') {
+                    const targetBox = div.querySelector('.category-box-group3');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group3';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                         if (priceSizeBtn) priceSizeBtn.style.display = 'inline-block';
                         if (priceAnnotationBtn) priceAnnotationBtn.style.display = 'inline-block';
+                    }
 
-                    } else if (selectedBusiness === 'グラビア') {
+                } else if (['WEB', '動画', '画像全般', '避難経路図', 'その他'].includes(selectedBusiness)) {
+                    const targetBox = div.querySelector('.category-box-group4');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group4';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
+                    }
+
+                } else if (selectedBusiness === 'グラビア') {
+                    const targetBox = div.querySelector('.category-box-group5');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group5';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                         if (gravureSizeBtn) gravureSizeBtn.style.display = 'inline-block';
+                    }
 
-                    } else if (['POPポスター', '看板'].includes(selectedBusiness)) {
+                } else if (['POPポスター', '看板'].includes(selectedBusiness)) {
+                    const targetBox = div.querySelector('.category-box-group6');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group6';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                         if (printSizeBtn) printSizeBtn.style.display = 'inline-block';
+                    }
 
-                    } else {
-                        // その他（WEB, 動画, 名刺, 組織図 等）はボタン無し
-                        // hideAllButtons()ですでに非表示になっているため処理不要
-                        // ラッパー自体を隠したい場合は以下を有効化
-                        // sizeButtonsWrapper.style.display = 'none';
+                } else if (['名刺', 'シール', 'のぼり'].includes(selectedBusiness)) {
+                    const targetBox = div.querySelector('.category-box-group7');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group7';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
+                    }
+
+                } else if (selectedBusiness === '組織図') {
+                    const targetBox = div.querySelector('.category-box-group8');
+                    if (targetBox) targetBox.style.display = 'block';
+                    currentGroup = 'group8';
+
+                    if (sizeButtonsWrapper) {
+                        sizeButtonsWrapper.style.display = 'block';
+                        hideAllButtons();
                     }
                 }
+
+                // モーダル表示用にグループ情報を保存
+                workCategoryWrapper.setAttribute('data-current-group', currentGroup);
+
             } else {
                 // 選択なしの場合
                 workCategoryWrapper.style.display = 'none';
+                workCategoryWrapper.removeAttribute('data-current-group');
                 if (sizeButtonsWrapper) {
                     sizeButtonsWrapper.style.display = 'none';
                     hideAllButtons();
