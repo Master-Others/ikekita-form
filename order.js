@@ -723,6 +723,11 @@ function createRequestSet() {
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="新規">
                                 <span class="item-title">新規</span>
                             </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
                         </div>
                         <div class="accordion-content">
                             <div class="pattern-rows-container"></div>
@@ -735,6 +740,11 @@ function createRequestSet() {
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="修正">
                                 <span class="item-title">修正</span>
                             </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
                         </div>
                         <div class="accordion-content">
                             <div class="pattern-rows-container"></div>
@@ -747,6 +757,11 @@ function createRequestSet() {
                                 <input type="checkbox" class="enable-check" name="work_category_${requestCount}" value="削除">
                                 <span class="item-title">削除</span>
                             </label>
+                            <div class="input-group">
+                                <span class="label-text">人数</span>
+                                <input type="number" class="num-input pattern-count-input" min="1" max="9" placeholder="0">
+                                <button type="button" class="set-btn">SET</button>
+                            </div>
                         </div>
                         <div class="accordion-content">
                             <div class="pattern-rows-container"></div>
