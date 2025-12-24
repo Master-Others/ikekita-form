@@ -216,10 +216,17 @@ function createRequestSet() {
     if (requestCount > 1 && (previousMember || previousMemberCustom)) {
         // 2回目以降で前回の値がある場合
         const displayText = previousMemberCustom || previousMember;
+
+        // データが読み込まれている場合のみ「同上」オプションを追加
+        let sameAsAboveOption = '';
+        if (MASTER_DATA.members.length > 0) {
+            sameAsAboveOption = `<option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>`;
+        }
+
         memberSelectHTML = `
             <select class="member-select" name="member_${requestCount}" data-index="${requestCount}">
                 <option value="">選択</option>
-                <option value="${previousMember || '未登録者'}" selected>同上 (${displayText})</option>
+                ${sameAsAboveOption}
                 ${memberOptions}
                 <option value="未登録者">未登録者</option>
             </select>`;
@@ -1169,10 +1176,23 @@ function createRequestSet() {
             const categoryValue = item.querySelector('.enable-check').value;
 
             for (let i = 1; i <= count; i++) {
-                // パターンごとのブロックを作成
+                // パターンごとのアコーディオンブロックを作成
+                const patternAccordion = document.createElement('div');
+                patternAccordion.className = 'pattern-accordion';
+                patternAccordion.setAttribute('data-pattern-index', i);
+
+                // アコーディオンヘッダー
+                const accordionToggle = document.createElement('div');
+                accordionToggle.className = 'pattern-accordion-toggle';
+                accordionToggle.innerHTML = `
+                    <span class="pattern-number">パターン${i}</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                `;
+
+                // パターンブロック（アコーディオンの中身）
                 const patternBlock = document.createElement('div');
                 patternBlock.className = 'pattern-block';
-                patternBlock.setAttribute('data-pattern-index', i);
+                patternBlock.style.display = 'block'; // 初期状態は開いている
 
                 // パターン名入力とサイズ数入力の行
                 const rowDiv = document.createElement('div');
@@ -1273,7 +1293,25 @@ function createRequestSet() {
 
                 patternBlock.appendChild(noteDiv);
 
-                patternRowsContainer.appendChild(patternBlock);
+                // アコーディオンに要素を追加
+                patternAccordion.appendChild(accordionToggle);
+                patternAccordion.appendChild(patternBlock);
+                patternRowsContainer.appendChild(patternAccordion);
+
+                // アコーディオンのトグル機能
+                accordionToggle.addEventListener('click', function() {
+                    const isOpen = patternBlock.style.display === 'block';
+                    patternBlock.style.display = isOpen ? 'none' : 'block';
+
+                    const icon = this.querySelector('.accordion-icon');
+                    if (isOpen) {
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-right');
+                    } else {
+                        icon.classList.remove('fa-chevron-right');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                });
 
                 // 同期処理のイベントリスナーを追加
                 const updateDetails = () => {
@@ -1314,6 +1352,84 @@ function createRequestSet() {
     // バナーサイズ挿入ボタンのイベント
     const sizeInsertButtons = div.querySelectorAll('.size-insert-btn');
     sizeInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sizeValue = this.dataset.size;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = sizeValue + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // LPサイズ挿入ボタンのイベント
+    const lpInsertButtons = div.querySelectorAll('.lp-insert-btn');
+    lpInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sizeValue = this.dataset.size;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = sizeValue + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // 料金表サイズ挿入ボタンのイベント
+    const priceInsertButtons = div.querySelectorAll('.price-insert-btn');
+    priceInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sizeValue = this.dataset.size;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、サイズを選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + ',' + sizeValue + ',';
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + sizeValue + ',';
+            } else {
+                lastFocusedDetailsTextarea.value = sizeValue + ',';
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // グラビア挿入ボタンのイベント
+    const gravureInsertButtons = div.querySelectorAll('.gravure-insert-btn');
+    gravureInsertButtons.forEach(button => {
         button.addEventListener('click', function() {
             const sizeValue = this.dataset.size;
 
@@ -1382,6 +1498,58 @@ function createRequestSet() {
                 lastFocusedDetailsTextarea.value = currentValue + annotationValue;
             } else {
                 lastFocusedDetailsTextarea.value = annotationValue;
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // LP注釈挿入ボタンのイベント
+    const lpAnnotationInsertButtons = div.querySelectorAll('.lp-annotation-insert-btn');
+    lpAnnotationInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const lpAnnotationValue = this.dataset.annotation;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、LP注釈を選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + lpAnnotationValue;
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + lpAnnotationValue;
+            } else {
+                lastFocusedDetailsTextarea.value = lpAnnotationValue;
+            }
+
+            // フォーカスを戻す
+            lastFocusedDetailsTextarea.focus();
+        });
+    });
+
+    // 料金表注釈挿入ボタンのイベント
+    const priceAnnotationInsertButtons = div.querySelectorAll('.price-annotation-insert-btn');
+    priceAnnotationInsertButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const priceAnnotationValue = this.dataset.annotation;
+
+            if (!lastFocusedDetailsTextarea) {
+                alert('内容欄をクリックしてから、料金表注釈を選択してください');
+                return;
+            }
+
+            // 現在の値に追加
+            const currentValue = lastFocusedDetailsTextarea.value;
+            if (currentValue && !currentValue.endsWith(',')) {
+                lastFocusedDetailsTextarea.value = currentValue + priceAnnotationValue;
+            } else if (currentValue) {
+                lastFocusedDetailsTextarea.value = currentValue + priceAnnotationValue;
+            } else {
+                lastFocusedDetailsTextarea.value = priceAnnotationValue;
             }
 
             // フォーカスを戻す
