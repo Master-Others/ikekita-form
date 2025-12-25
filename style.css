@@ -186,7 +186,7 @@ h1 {
 }
 .request-set .main-label {
   display: block;
-  margin: 10px 0 5px 5px;
+  margin: 12px 0 6px 5px;
   font-size: 16px;
   font-weight: bold;
   color: #2e78ff;
@@ -267,21 +267,32 @@ textarea:focus {
   border-color: #2e78ff;
 }
 
+textarea:focus {
+  padding: 3px;
+}
+
 textarea {
   resize: vertical;
   min-height: 52px;
   padding: 5px;
+  box-sizing: border-box;
+  resize: vertical;
+  line-height: 1.8;
+  appearance: none;
+  -webkit-appearance: none;
 }
+
 
 textarea.note-box {
   width: 100%;
   height: 52px;
-  padding: 5px;
+  padding: 3px;
   box-sizing: border-box;
   border: 1px solid #999;
   border-radius: 4px;
   resize: vertical;
   background-color: #fff;
+  line-height: 1.8;
 }
 
 
@@ -317,7 +328,7 @@ textarea.note-box {
   font-size: 14px;
 }
 .size-toggle-btn:hover {
-  background-color: #a81d9a;
+  background-color: #fb6f29;
 }
 
 /* メインボタンのスタイル */
@@ -336,7 +347,7 @@ button {
   display: block;
   max-width: 330px;
   margin: 20px auto 0;
-  background: #345873;
+  background: #447497;
   color: white;
 }
 #addRequest:hover {
@@ -568,12 +579,11 @@ button:disabled {
 .label-text {
   font-size: 12px;
   color: #333;
-  width: 55px;
   letter-spacing: -2px;
 }
 .input-group .num-input {
   width: 40px;
-  padding: 0px;
+  padding: 3px 0 2px;
   border: 1px solid #999;
   border-radius: 4px;
   text-align: center;
@@ -600,7 +610,7 @@ button:disabled {
 }
 @media (min-width: 768px) {
   .set-btn {
-    padding: 5px 10px;
+    padding: 8px 10px;
   }
 }
 
@@ -620,7 +630,23 @@ button:disabled {
 }
 
 .pattern-block {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pattern-accordion {
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #999;
+}
+.pattern-accordion-toggle {
+  margin-bottom: 8px;
+}
+.pattern-number {
+  margin-left: 5px;
+}
+.accordion-icon:hover {
+  cursor: pointer;
+  color: #2e78ff;
+  transition: 0.3s ease-out;
 }
 
 /* 生成される行のスタイル */
@@ -634,11 +660,11 @@ button:disabled {
 .generated-row .pattern-text-input {
   flex: 1;
   width: calc(100% - 100px);
-  padding: 1px 3px 0;
+  padding: 3px 5px 2px;
   border: 1px solid #999;
   border-radius: 4px;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 .generated-row .label-text {
   font-size: 12px;
@@ -648,10 +674,12 @@ button:disabled {
 }
 .generated-row .num-input {
   width: 45px;
-  padding: 0px;
+  padding: 3px 0 2px;
   border: 1px solid #999;
   border-radius: 4px;
   text-align: center;
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 /* 内訳表示エリア（同期先） */
@@ -659,15 +687,21 @@ button:disabled {
   width: 100%;
   margin-top: 10px;
 }
-textarea.sync-target {
+textarea.sync-target,
+textarea.sync-target:focus {
   width: 100%;
-  height: 52px;
-  padding: 5px;
+  min-height: 52px;
+  padding: 3px;
   box-sizing: border-box;
   border: 1px solid #999;
   border-radius: 4px;
   resize: vertical;
   background-color: #fff;
+  font-family: inherit;
+  line-height: 1.8;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
 }
 
 .details-area,.note-area {
@@ -686,9 +720,8 @@ textarea.sync-target {
   margin-left: 10px;
   cursor: pointer;
 }
-.details-label-wrapper label{
-  margin-top: 5px;
-  margin-left: 5px;
+.details-label-wrapper .main-label{
+  margin: 0 5px 0;
   font-size: 14px;
 }
 
@@ -790,7 +823,7 @@ textarea.sync-target {
   margin-bottom: 10px;
 }
 
-.size-insert-btn , .print-size-insert-btn , .annotation-insert-btn {
+.size-insert-btn , .lp-insert-btn {
   padding: 8px 12px;
   background-color: #A8701D;
   color: white;
@@ -801,10 +834,48 @@ textarea.sync-target {
   transition: background-color 0.3s;
 }
 
-.size-insert-btn:hover {
+.size-insert-btn:hover , .lp-insert-btn:hover {
   background-color: #a92912;
 }
 
-.size-insert-btn:active {
+.size-insert-btn:active, .lp-insert-btn:active {
+  background-color: #fe6c6c;
+}
+
+.print-size-insert-btn {
+  padding: 8px 12px;
+  background-color: #825716;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s;
+}
+
+.print-size-insert-btn:hover {
+  background-color: #a92912;
+}
+
+.print-size-insert-btn:active {
+  background-color: #fe6c6c;
+}
+
+.annotation-insert-btn , .lp-annotation-insert-btn {
+  padding: 8px 12px;
+  background-color: #822116;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s;
+}
+
+.annotation-insert-btn:hover , .lp-annotation-insert-btn:hover {
+  background-color: #a92912;
+}
+
+.annotation-insert-btn:active , .lp-annotation-insert-btn:active {
   background-color: #fe6c6c;
 }

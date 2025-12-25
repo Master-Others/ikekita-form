@@ -1200,7 +1200,7 @@ function createRequestSet() {
                 accordionToggle.className = 'pattern-accordion-toggle';
                 accordionToggle.innerHTML = `
                     <span class="pattern-number">パターン${i}</span>
-                    <i class="fas fa-chevron-down accordion-icon"></i>
+                    <i class="fas fa-chevron-circle-down accordion-icon"></i>
                 `;
 
                 // パターンブロック（アコーディオンの中身）
@@ -1319,11 +1319,11 @@ function createRequestSet() {
 
                     const icon = this.querySelector('.accordion-icon');
                     if (isOpen) {
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-right');
+                        icon.classList.remove('fa-chevron-circle-down');
+                        icon.classList.add('fa-chevron-circle-right');
                     } else {
-                        icon.classList.remove('fa-chevron-right');
-                        icon.classList.add('fa-chevron-down');
+                        icon.classList.remove('fa-chevron-circle-right');
+                        icon.classList.add('fa-chevron-circle-down');
                     }
                 });
 
@@ -1595,12 +1595,13 @@ function createRequestSet() {
         });
     });
 
-    // 最後にフォーカスされた内容textareaを追跡
+    // 最後にフォーカスされた内容または備考のtextareaを追跡
     let lastFocusedDetailsTextarea = null;
 
-    // すべての内容textareaにフォーカスイベントを設定
+    // すべてのtextareaにフォーカスイベントを設定
     div.addEventListener('focusin', (e) => {
-        if (e.target.classList.contains('sync-target')) {
+        // 'sync-target' (内容) または 'note-box' (備考) のクラスを持つ場合
+        if (e.target.classList.contains('sync-target') || e.target.classList.contains('note-box')) {
             lastFocusedDetailsTextarea = e.target;
         }
     });
